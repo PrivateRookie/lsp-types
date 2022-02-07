@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 clap = { version = "3", features = ["derive"] }
 ureq = "2"
+comrak = "0.12"
