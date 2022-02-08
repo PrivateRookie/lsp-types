@@ -1,10 +1,46 @@
+use std::{fs::File, io::Read, path::PathBuf};
+
+use clap::Parser;
 use comrak::{nodes::AstNode, parse_document, Arena, ComrakOptions};
+use schemafy_lib::Expander;
 
 const URL: &str = "https://raw.githubusercontent.com/microsoft/language-server-protocol/main/versions/protocol-2-x.md";
+
+#[derive(Parser, Debug)]
+enum Args {
+    /// fetch definition from github raw content
+    Fetch,
+    /// generate rust struct def
+    Gen {
+        /// json schema file path
+        source: PathBuf,
+    },
+}
+
 fn main() {
-    let body = include_str!("./content.md");
-    let ts = extract_ts(&body);
-    println!("{}", ts);
+    let arg = Args::parse();
+    match arg {
+        Args::Fetch => {
+            let content = fetch_content();
+            let ts = extract_ts(&content);
+            println!("{}", ts);
+        }
+        Args::Gen { source } => {
+            let mut schema = String::new();
+            let mut file = File::open(source).expect("can not open file");
+            file.read_to_string(&mut schema)
+                .expect("read content failed");
+            let schema = serde_json::from_str(&schema).unwrap();
+            let mut expander = Expander::new(Some("Lsp"), "::schemafy_core::", &schema);
+            let code = expander.expand(&schema);
+            println!(
+                "use serde::{{Deserialize, Serialize}};\n
+                use serde_repr::{{Deserialize_repr, Serialize_repr}};\n\n
+                {}",
+                code.to_string()
+            );
+        }
+    }
 }
 
 pub fn fetch_content() -> String {

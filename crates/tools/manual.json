@@ -1,0 +1,155 @@
+{
+    "CompletionItemKind": {
+        "description": "The kind of a completion entry.",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+        ],
+        "enumNames": [
+            "Text",
+            "Method",
+            "Function",
+            "Constructor",
+            "Field",
+            "Variable",
+            "Class",
+            "Interface",
+            "Module",
+            "Property",
+            "Unit",
+            "Value",
+            "Enum",
+            "Keyword",
+            "Snippet",
+            "Color",
+            "File",
+            "Reference"
+        ]
+    },
+    "DocumentHighlightKind": {
+        "description": " A document highlight kind.",
+        "enum": [
+            1,
+            2,
+            3
+        ],
+        "enumNames": [
+            "Text",
+            "Read",
+            "Write"
+        ]
+    },
+    "SymbolKind": {
+        "description": "A symbol kind.",
+        "enum": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18
+        ],
+        "enumNames": [
+            "File",
+            "Module",
+            "Namespace",
+            "Package",
+            "Class",
+            "Method",
+            "Property",
+            "Field",
+            "Constructor",
+            "Enum",
+            "Interface",
+            "Function",
+            "Variable",
+            "Constant",
+            "String",
+            "Number",
+            "Boolean",
+            "Array"
+        ]
+    },
+    "DiagnosticSeverity": {
+        "description": "",
+        "enum": [
+            1,
+            2,
+            3,
+            4
+        ],
+        "enumNames": [
+            "Error",
+            "Warning",
+            "Information",
+            "Hint"
+        ]
+    },
+    "TextDocumentSyncKind": {
+        "description": "Defines how the host (editor) should sync document changes to the language server.",
+        "enum": [
+            0,
+            1,
+            2
+        ],
+        "enumNames": [
+            "None",
+            "Full",
+            "Incremental"
+        ]
+    },
+    "MessageType": {
+        "enum": [
+            1,
+            2,
+            3,
+            4
+        ],
+        "enumNames": [
+            "Error",
+            "Warning",
+            "Info",
+            "Log"
+        ]
+    },
+    "FileChangeType": {
+        "enum": [
+            1,
+            2,
+            3
+        ],
+        "enumNames": [
+            "Created",
+            "Changed",
+            "Deleted"
+        ]
+    }
+}
