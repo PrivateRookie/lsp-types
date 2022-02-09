@@ -1147,8 +1147,8 @@ pub struct InitializeParams {
     #[doc = " The locale the client is currently showing the user interface in. This must not necessarily "]
     #[doc = " be the locale of the operating system."]
     #[doc = " "]
-    #[doc = " Uses IETF language tags as the value's syntax (See "]
-    #[doc = " https://en.wikipedia.org/wiki/IETF_language_tag)"]
+    #[doc = " Uses IETF language tags as the value's syntax (See"]
+    #[doc = "<https://en.wikipedia.org/wiki/IETF_language_tag>)"]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub locale: Option<String>,
     #[doc = " The process Id of the parent process that started the server. Is null if the process has "]
