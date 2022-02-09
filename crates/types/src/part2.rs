@@ -1015,8 +1015,9 @@ pub struct FormattingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "trimTrailingWhitespace")]
     pub trim_trailing_whitespace: Option<bool>,
-
-    // TODO
+    #[doc = "Signature for further properties."]
+    #[serde(flatten)]
+    pub extra: std::collections::BTreeMap<String, OneOf3<bool, Integer, String>>,
 }
 #[doc = " The result of a hover request."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -1938,11 +1939,11 @@ pub struct SemanticTokensClientCapabilitiesRequests {
     #[doc = " The client will send the `textDocument/semanticTokens/full` request if the server provides "]
     #[doc = " a corresponding handler."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub full: Option<serde_json::Value>,
+    pub full: Option<SemanticTokensOptionsFull>,
     #[doc = " The client will send the `textDocument/semanticTokens/range` request if the server provides "]
     #[doc = " a corresponding handler."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub range: Option<serde_json::Value>,
+    pub range: Option<bool>,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SemanticTokensClientCapabilities {
@@ -2031,15 +2032,21 @@ pub struct SemanticTokensLegend {
 pub struct SemanticTokensOptions {
     #[doc = " Server supports providing semantic tokens for a full document."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub full: Option<serde_json::Value>,
+    pub full: Option<OneOf<bool, SemanticTokensOptionsFull>>,
     #[doc = " The legend used by the server"]
     pub legend: SemanticTokensLegend,
     #[doc = " Server supports providing semantic tokens for a specific range of a document."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub range: Option<serde_json::Value>,
+    pub range: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
+}
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+pub struct SemanticTokensOptionsFull {
+    #[doc = " The server supports deltas for full documents."]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub delta: Option<bool>,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SemanticTokensParams {
