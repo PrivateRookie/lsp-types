@@ -4,7 +4,7 @@ use clap::Parser;
 use comrak::{nodes::AstNode, parse_document, Arena, ComrakOptions};
 use schemafy_lib::Expander;
 
-const URL: &str = "https://raw.githubusercontent.com/microsoft/language-server-protocol/main/versions/protocol-2-x.md";
+const URL: &str = "https://raw.githubusercontent.com/microsoft/language-server-protocol/gh-pages/_specifications/specification-3-16.md";
 
 #[derive(Parser, Debug)]
 enum Args {
@@ -21,7 +21,8 @@ fn main() {
     let arg = Args::parse();
     match arg {
         Args::Fetch => {
-            let content = fetch_content();
+            // let content = fetch_content();
+            let content = include_str!("content.md");
             let ts = extract_ts(&content);
             println!("{}", ts);
         }

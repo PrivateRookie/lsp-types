@@ -408,6 +408,7 @@ dependencies = [
 name = "lsp-ty"
 version = "0.1.0"
 dependencies = [
+ "schemafy_core 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde",
  "serde_json",
  "serde_repr",
@@ -697,13 +698,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "schemafy_core"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2bec29dddcfe60f92f3c0d422707b8b56473983ef0481df8d5236ed3ab8fdf24"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "schemafy_lib"
 version = "0.6.0"
 dependencies = [
  "Inflector",
  "proc-macro2",
  "quote",
- "schemafy_core",
+ "schemafy_core 0.6.0",
  "serde",
  "serde_derive",
  "serde_json",
