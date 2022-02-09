@@ -59,7 +59,7 @@ export interface ResponseMessage extends Message {
 	error?: ResponseError;
 }
 
-interface ResponseError {
+export interface ResponseError {
 	/**
 	 * A number indicating the error type that occurred.
 	 */
@@ -135,7 +135,7 @@ export namespace ErrorCodes {
 	export const lspReservedErrorRangeEnd: integer = -32800;
 }
 
-interface NotificationMessage extends Message {
+export interface NotificationMessage extends Message {
 	/**
 	 * The method to be invoked.
 	 */
@@ -147,16 +147,16 @@ interface NotificationMessage extends Message {
 	params?: array | object;
 }
 
-interface CancelParams {
+export interface CancelParams {
 	/**
 	 * The request id to cancel.
 	 */
 	id: integer | string;
 }
 
-type ProgressToken = integer | string;
+export type ProgressToken = integer | string;
 
-interface ProgressParams<T> {
+export interface ProgressParams<T> {
 	/**
 	 * The progress token provided by the client or server.
 	 */
@@ -168,9 +168,9 @@ interface ProgressParams<T> {
 	value: T;
 }
 
-type DocumentUri = string;
+export type DocumentUri = string;
 
-type URI = string;
+export type URI = string;
 
 /**
  * Client capabilities specific to regular expressions.
@@ -189,7 +189,7 @@ export interface RegularExpressionsClientCapabilities {
 
 export const EOL: string[] = ['\n', '\r\n', '\r'];
 
-interface Position {
+export interface Position {
 	/**
 	 * Line position in a document (zero-based).
 	 */
@@ -207,7 +207,7 @@ interface Position {
 }
 
 
-interface Range {
+export interface Range {
 	/**
 	 * The range's start position.
 	 */
@@ -219,12 +219,12 @@ interface Range {
 	end: Position;
 }
 
-interface Location {
+export interface Location {
 	uri: DocumentUri;
 	range: Range;
 }
 
-interface LocationLink {
+export interface LocationLink {
 
 	/**
 	 * Span of the origin of this link.
@@ -384,7 +384,7 @@ export interface CodeDescription {
 	href: URI;
 }
 
-interface Command {
+export interface Command {
 	/**
 	 * Title of the command, like `save`.
 	 */
@@ -400,7 +400,7 @@ interface Command {
 	arguments?: any[];
 }
 
-interface TextEdit {
+export interface TextEdit {
 	/**
 	 * The range of the text document to be manipulated. To insert
 	 * text into a document create a range where start === end.
@@ -753,14 +753,14 @@ export namespace FailureHandlingKind {
 	export const Undo: FailureHandlingKind = 'undo';
 }
 
-interface TextDocumentIdentifier {
+export interface TextDocumentIdentifier {
 	/**
 	 * The text document's URI.
 	 */
 	uri: DocumentUri;
 }
 
-interface TextDocumentItem {
+export interface TextDocumentItem {
 	/**
 	 * The text document's URI.
 	 */
@@ -783,7 +783,7 @@ interface TextDocumentItem {
 	text: string;
 }
 
-interface VersionedTextDocumentIdentifier extends TextDocumentIdentifier {
+export interface VersionedTextDocumentIdentifier extends TextDocumentIdentifier {
 	/**
 	 * The version number of this document.
 	 *
@@ -793,7 +793,7 @@ interface VersionedTextDocumentIdentifier extends TextDocumentIdentifier {
 	version: integer;
 }
 
-interface OptionalVersionedTextDocumentIdentifier extends TextDocumentIdentifier {
+export interface OptionalVersionedTextDocumentIdentifier extends TextDocumentIdentifier {
 	/**
 	 * The version number of this document. If an optional versioned text document
 	 * identifier is sent from the server to the client and the file is not
@@ -808,7 +808,7 @@ interface OptionalVersionedTextDocumentIdentifier extends TextDocumentIdentifier
 	version: integer | null;
 }
 
-interface TextDocumentPositionParams {
+export interface TextDocumentPositionParams {
 	/**
 	 * The text document.
 	 */
@@ -1053,7 +1053,7 @@ export interface PartialResultParams {
 
 export type TraceValue = 'off' | 'messages' | 'verbose';
 
-interface InitializeParams extends WorkDoneProgressParams {
+export interface InitializeParams extends WorkDoneProgressParams {
 	/**
 	 * The process Id of the parent process that started the server. Is null if
 	 * the process has not been started by another process. If the parent
@@ -1289,7 +1289,7 @@ export interface TextDocumentClientCapabilities {
 	moniker?: MonikerClientCapabilities;
 }
 
-interface ClientCapabilities {
+export interface ClientCapabilities {
 	/**
 	 * Workspace specific client capabilities.
 	 */
@@ -1462,7 +1462,7 @@ interface ClientCapabilities {
 	experimental?: any;
 }
 
-interface InitializeResult {
+export interface InitializeResult {
 	/**
 	 * The capabilities the language server provides.
 	 */
@@ -1497,7 +1497,7 @@ export interface InitializeError {
 	retry: boolean;
 }
 
-interface ServerCapabilities {
+export interface ServerCapabilities {
 	/**
 	 * Defines how text documents are synced. Is either a detailed structure
 	 * defining each notification or for backwards compatibility the
@@ -1728,10 +1728,10 @@ interface ServerCapabilities {
 	experimental?: any;
 }
 
-interface InitializedParams {
+export interface InitializedParams {
 }
 
-interface LogTraceParams {
+export interface LogTraceParams {
 	/**
 	 * The message to be logged.
 	 */
@@ -1743,14 +1743,14 @@ interface LogTraceParams {
 	verbose?: string;
 }
 
-interface SetTraceParams {
+export interface SetTraceParams {
 	/**
 	 * The new value that should be assigned to the trace setting.
 	 */
 	value: TraceValue;
 }
 
-interface ShowMessageParams {
+export interface ShowMessageParams {
 	/**
 	 * The message type. See {@link MessageType}.
 	 */
@@ -1799,7 +1799,7 @@ export interface ShowMessageRequestClientCapabilities {
 	};
 }
 
-interface ShowMessageRequestParams {
+export interface ShowMessageRequestParams {
 	/**
 	 * The message type. See {@link MessageType}
 	 */
@@ -1816,7 +1816,7 @@ interface ShowMessageRequestParams {
 	actions?: MessageActionItem[];
 }
 
-interface MessageActionItem {
+export interface MessageActionItem {
 	/**
 	 * A short title like 'Retry', 'Open Log' etc.
 	 */
@@ -1883,7 +1883,7 @@ export interface ShowDocumentResult {
 	success: boolean;
 }
 
-interface LogMessageParams {
+export interface LogMessageParams {
 	/**
 	 * The message type. See {@link MessageType}
 	 */
@@ -2018,7 +2018,7 @@ export interface DidChangeConfigurationClientCapabilities {
 	dynamicRegistration?: boolean;
 }
 
-interface DidChangeConfigurationParams {
+export interface DidChangeConfigurationParams {
 	/**
 	 * The actual changed settings
 	 */
@@ -2103,7 +2103,7 @@ export enum WatchKind {
 	Delete = 4,
 }
 
-interface DidChangeWatchedFilesParams {
+export interface DidChangeWatchedFilesParams {
 	/**
 	 * The actual file events.
 	 */
@@ -2113,7 +2113,7 @@ interface DidChangeWatchedFilesParams {
 /**
  * An event describing a file change.
  */
-interface FileEvent {
+export interface FileEvent {
 	/**
 	 * The file's URI.
 	 */
@@ -2142,7 +2142,7 @@ export enum FileChangeType {
 	Deleted = 3,
 }
 
-interface WorkspaceSymbolClientCapabilities {
+export interface WorkspaceSymbolClientCapabilities {
 	/**
 	 * Symbol request supports dynamic registration.
 	 */
@@ -2190,7 +2190,7 @@ export interface WorkspaceSymbolRegistrationOptions
 /**
  * The parameters of a Workspace Symbol Request.
  */
-interface WorkspaceSymbolParams extends WorkDoneProgressParams,
+export interface WorkspaceSymbolParams extends WorkDoneProgressParams,
 	PartialResultParams {
 	/**
 	 * A query string to filter symbols by. Clients may send an empty
@@ -2273,7 +2273,7 @@ export interface ApplyWorkspaceEditResponse {
  *
  * @since 3.16.0
  */
-interface FileOperationRegistrationOptions {
+export interface FileOperationRegistrationOptions {
 	/**
 	 * The actual filters.
 	 */
@@ -2319,7 +2319,7 @@ export interface FileOperationPatternOptions {
  *
  * @since 3.16.0
  */
-interface FileOperationPattern {
+export interface FileOperationPattern {
 	/**
 	 * The glob pattern to match. Glob patterns can have the following syntax:
 	 * - `*` to match one or more characters in a path segment
@@ -2491,7 +2491,7 @@ export interface TextDocumentSyncOptions {
 	change?: TextDocumentSyncKind;
 }
 
-interface DidOpenTextDocumentParams {
+export interface DidOpenTextDocumentParams {
 	/**
 	 * The document that was opened.
 	 */
@@ -2510,7 +2510,7 @@ export interface TextDocumentChangeRegistrationOptions
 	syncKind: TextDocumentSyncKind;
 }
 
-interface DidChangeTextDocumentParams {
+export interface DidChangeTextDocumentParams {
 	/**
 	 * The document that did change. The version number points
 	 * to the version after all provided content changes have
@@ -2617,7 +2617,7 @@ export interface TextDocumentSaveRegistrationOptions
 	includeText?: boolean;
 }
 
-interface DidSaveTextDocumentParams {
+export interface DidSaveTextDocumentParams {
 	/**
 	 * The document that was saved.
 	 */
@@ -2630,7 +2630,7 @@ interface DidSaveTextDocumentParams {
 	text?: string;
 }
 
-interface DidCloseTextDocumentParams {
+export interface DidCloseTextDocumentParams {
 	/**
 	 * The document that was closed.
 	 */
@@ -2760,7 +2760,7 @@ export interface PublishDiagnosticsClientCapabilities {
 	dataSupport?: boolean;
 }
 
-interface PublishDiagnosticsParams {
+export interface PublishDiagnosticsParams {
 	/**
 	 * The URI for which diagnostic information is reported.
 	 */
@@ -3330,7 +3330,7 @@ export interface Hover {
  *
  * @deprecated use MarkupContent instead.
  */
-type MarkedString = string | { language: string; value: string };
+export type MarkedString = string | { language: string; value: string };
 
 export interface SignatureHelpClientCapabilities {
 	/**
@@ -4330,7 +4330,7 @@ export interface CodeLensRegistrationOptions extends
 	TextDocumentRegistrationOptions, CodeLensOptions {
 }
 
-interface CodeLensParams extends WorkDoneProgressParams, PartialResultParams {
+export interface CodeLensParams extends WorkDoneProgressParams, PartialResultParams {
 	/**
 	 * The document to request code lens for.
 	 */
@@ -4345,7 +4345,7 @@ interface CodeLensParams extends WorkDoneProgressParams, PartialResultParams {
  * performance reasons the creation of a code lens and resolving should be done
  * in two stages.
  */
-interface CodeLens {
+export interface CodeLens {
 	/**
 	 * The range in which this code lens is valid. Should only span a single
 	 * line.
@@ -4402,7 +4402,7 @@ export interface DocumentLinkRegistrationOptions extends
 	TextDocumentRegistrationOptions, DocumentLinkOptions {
 }
 
-interface DocumentLinkParams extends WorkDoneProgressParams,
+export interface DocumentLinkParams extends WorkDoneProgressParams,
 	PartialResultParams {
 	/**
 	 * The document to provide document links for.
@@ -4414,7 +4414,7 @@ interface DocumentLinkParams extends WorkDoneProgressParams,
  * A document link is a range in a text document that links to an internal or
  * external resource, like another text document or a web site.
  */
-interface DocumentLink {
+export interface DocumentLink {
 	/**
 	 * The range this link applies to.
 	 */
@@ -4459,7 +4459,7 @@ export interface DocumentColorRegistrationOptions extends
 	DocumentColorOptions {
 }
 
-interface DocumentColorParams extends WorkDoneProgressParams,
+export interface DocumentColorParams extends WorkDoneProgressParams,
 	PartialResultParams {
 	/**
 	 * The text document.
@@ -4467,7 +4467,7 @@ interface DocumentColorParams extends WorkDoneProgressParams,
 	textDocument: TextDocumentIdentifier;
 }
 
-interface ColorInformation {
+export interface ColorInformation {
 	/**
 	 * The range in the document where this color appears.
 	 */
@@ -4482,7 +4482,7 @@ interface ColorInformation {
 /**
  * Represents a color in RGBA space.
  */
-interface Color {
+export interface Color {
 
 	/**
 	 * The red component of this color in the range [0-1].
@@ -4505,7 +4505,7 @@ interface Color {
 	readonly alpha: decimal;
 }
 
-interface ColorPresentationParams extends WorkDoneProgressParams,
+export interface ColorPresentationParams extends WorkDoneProgressParams,
 	PartialResultParams {
 	/**
 	 * The text document.
@@ -4523,7 +4523,7 @@ interface ColorPresentationParams extends WorkDoneProgressParams,
 	range: Range;
 }
 
-interface ColorPresentation {
+export interface ColorPresentation {
 	/**
 	 * The label of this color presentation. It will be shown on the color
 	 * picker header. By default this is also the text that is inserted when
@@ -4558,7 +4558,7 @@ export interface DocumentFormattingRegistrationOptions extends
 	TextDocumentRegistrationOptions, DocumentFormattingOptions {
 }
 
-interface DocumentFormattingParams extends WorkDoneProgressParams {
+export interface DocumentFormattingParams extends WorkDoneProgressParams {
 	/**
 	 * The document to format.
 	 */
@@ -4573,7 +4573,7 @@ interface DocumentFormattingParams extends WorkDoneProgressParams {
 /**
  * Value-object describing what options formatting should use.
  */
-interface FormattingOptions {
+export interface FormattingOptions {
 	/**
 	 * Size of a tab in spaces.
 	 */
@@ -4626,7 +4626,7 @@ export interface DocumentRangeFormattingRegistrationOptions extends
 	TextDocumentRegistrationOptions, DocumentRangeFormattingOptions {
 }
 
-interface DocumentRangeFormattingParams extends WorkDoneProgressParams {
+export interface DocumentRangeFormattingParams extends WorkDoneProgressParams {
 	/**
 	 * The document to format.
 	 */
@@ -4666,7 +4666,7 @@ export interface DocumentOnTypeFormattingRegistrationOptions extends
 	TextDocumentRegistrationOptions, DocumentOnTypeFormattingOptions {
 }
 
-interface DocumentOnTypeFormattingParams extends TextDocumentPositionParams {
+export interface DocumentOnTypeFormattingParams extends TextDocumentPositionParams {
 	/**
 	 * The character that has been typed.
 	 */
@@ -4733,7 +4733,7 @@ export interface RenameRegistrationOptions extends
 	TextDocumentRegistrationOptions, RenameOptions {
 }
 
-interface RenameParams extends TextDocumentPositionParams,
+export interface RenameParams extends TextDocumentPositionParams,
 	WorkDoneProgressParams {
 	/**
 	 * The new name of the symbol. If the given name is not valid the
@@ -4887,7 +4887,7 @@ export interface SelectionRange {
 	parent?: SelectionRange;
 }
 
-interface CallHierarchyClientCapabilities {
+export interface CallHierarchyClientCapabilities {
 	/**
 	 * Whether implementation supports dynamic registration. If this is set to
 	 * `true` the client supports the new `(TextDocumentRegistrationOptions &
@@ -5054,7 +5054,7 @@ export interface SemanticTokensLegend {
 }
 
 
-interface SemanticTokensClientCapabilities {
+export interface SemanticTokensClientCapabilities {
 	/**
 	 * Whether implementation supports dynamic registration. If this is set to
 	 * `true` the client supports the new `(TextDocumentRegistrationOptions &
@@ -5283,7 +5283,7 @@ export interface LinkedEditingRanges {
 	wordPattern?: string;
 }
 
-interface MonikerClientCapabilities {
+export interface MonikerClientCapabilities {
 	/**
 	 * Whether implementation supports dynamic registration. If this is set to
 	 * `true` the client supports the new `(TextDocumentRegistrationOptions &
