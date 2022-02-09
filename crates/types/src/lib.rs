@@ -2016,6 +2016,14 @@ pub enum FailureHandlingKind {
     #[serde(rename = "textOnlyTransactional")]
     TextOnlyTransactional,
 }
+#[doc = " The file event type."]
+#[derive(Clone, PartialEq, Debug, Serialize_repr, Deserialize_repr)]
+#[repr(i64)]
+pub enum FileChangeType {
+    Created = 1,
+    Changed = 2,
+    Deleted = 3,
+}
 #[doc = " Represents information on a file/folder create."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -2397,6 +2405,14 @@ pub struct ImplementationRegistrationOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
+}
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct InitializeError {
+    #[doc = " Indicates whether the client execute the following retry logic: (1) show the message "]
+    #[doc = " provided by the ResponseError to the user (2) user selects retry or cancel (3) if user "]
+    #[doc = " selected retry the initialize method is sent again."]
+    pub retry: bool,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -4205,6 +4221,13 @@ pub struct Unregistration {
 pub struct UnregistrationParams {
     pub unregisterations: Vec<Unregistration>,
 }
+#[derive(Clone, PartialEq, Debug, Serialize_repr, Deserialize_repr)]
+#[repr(i64)]
+pub enum WatchKind {
+    Create = 1,
+    Change = 2,
+    Delete = 4,
+}
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct WillSaveTextDocumentParamsTextDocument {
@@ -4474,7 +4497,7 @@ pub type Array = Vec<serde_json::Value>;
 #[doc = " notation (e.g. [0, 1] denotes all decimals d with 0 <= d <= 1."]
 pub type Decimal = f64;
 #[doc = " Defines an integer number in the range of -2^31 to 2^31 - 1."]
-pub type Integer = i32;
+pub type Integer = f64;
 #[doc = " Defines an unsigned integer number in the range of 0 to 2^31 - 1."]
-pub type Uinteger = u32;
+pub type Uinteger = f64;
 pub type Lsp = serde_json::Value;

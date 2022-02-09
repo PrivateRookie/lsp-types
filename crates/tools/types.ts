@@ -19,11 +19,11 @@ export type array = [];
  */
 export type decimal = number;
 
-interface Message {
+export interface Message {
 	jsonrpc: string;
 }
 
-interface RequestMessage extends Message {
+export interface RequestMessage extends Message {
 
 	/**
 	 * The request id.
@@ -41,7 +41,7 @@ interface RequestMessage extends Message {
 	params?: array | object;
 }
 
-interface ResponseMessage extends Message {
+export interface ResponseMessage extends Message {
 	/**
 	 * The request id.
 	 */
@@ -313,49 +313,47 @@ export interface Diagnostic {
 	data?: unknown;
 }
 
-export namespace DiagnosticSeverity {
+export enum DiagnosticSeverity {
 	/**
 	 * Reports an error.
 	 */
-	export const Error: 1 = 1;
+	Error = 1,
 	/**
 	 * Reports a warning.
 	 */
-	export const Warning: 2 = 2;
+	Warning = 2,
 	/**
 	 * Reports an information.
 	 */
-	export const Information: 3 = 3;
+	Information = 3,
 	/**
 	 * Reports a hint.
 	 */
-	export const Hint: 4 = 4;
+	Hint = 4,
 }
 
-export type DiagnosticSeverity = 1 | 2 | 3 | 4;
 
 /**
  * The diagnostic tags.
  *
  * @since 3.15.0
  */
-export namespace DiagnosticTag {
+export enum DiagnosticTag {
 	/**
 	 * Unused or unnecessary code.
 	 *
 	 * Clients are allowed to render diagnostics with this tag faded out
 	 * instead of having an error squiggle.
 	 */
-	export const Unnecessary: 1 = 1;
+	Unnecessary = 1,
 	/**
 	 * Deprecated or obsolete code.
 	 *
 	 * Clients are allowed to rendered diagnostics with this tag strike through.
 	 */
-	export const Deprecated: 2 = 2;
+	Deprecated = 2,
 }
 
-export type DiagnosticTag = 1 | 2;
 
 /**
  * Represents a related message and source code location for a diagnostic.
@@ -1488,21 +1486,8 @@ interface InitializeResult {
 	};
 }
 
-/**
- * Known error codes for an `InitializeError`;
- */
-export namespace InitializeError {
-	/**
-	 * If the protocol version provided by the client can't be handled by the
-	 * server.
-	 *
-	 * @deprecated This initialize error got replaced by client capabilities.
-	 * There is no version handshake in version 3.0x
-	 */
-	export const unknownProtocolVersion: 1 = 1;
-}
 
-interface InitializeError {
+export interface InitializeError {
 	/**
 	 * Indicates whether the client execute the following retry logic:
 	 * (1) show the message provided by the ResponseError to the user
@@ -1777,26 +1762,25 @@ interface ShowMessageParams {
 	message: string;
 }
 
-export namespace MessageType {
+export enum MessageType {
 	/**
 	 * An error message.
 	 */
-	export const Error = 1;
+	Error = 1,
 	/**
 	 * A warning message.
 	 */
-	export const Warning = 2;
+	Warning = 2,
 	/**
 	 * An information message.
 	 */
-	export const Info = 3;
+	Info = 3,
 	/**
 	 * A log message.
 	 */
-	export const Log = 4;
+	Log = 4,
 }
 
-export type MessageType = 1 | 2 | 3 | 4;
 
 /**
  * Show message request client capabilities
@@ -2102,21 +2086,21 @@ export interface FileSystemWatcher {
 	kind?: uinteger;
 }
 
-export namespace WatchKind {
+export enum WatchKind {
 	/**
 	 * Interested in create events.
 	 */
-	export const Create = 1;
+	Create = 1,
 
 	/**
 	 * Interested in change events
 	 */
-	export const Change = 2;
+	Change = 2,
 
 	/**
 	 * Interested in delete events
 	 */
-	export const Delete = 4;
+	Delete = 4,
 }
 
 interface DidChangeWatchedFilesParams {
@@ -2143,19 +2127,19 @@ interface FileEvent {
 /**
  * The file event type.
  */
-export namespace FileChangeType {
+export enum FileChangeType {
 	/**
 	 * The file got created.
 	 */
-	export const Created = 1;
+	Created = 1,
 	/**
 	 * The file got changed.
 	 */
-	export const Changed = 2;
+	Changed = 2,
 	/**
 	 * The file got deleted.
 	 */
-	export const Deleted = 3;
+	Deleted = 3,
 }
 
 interface WorkspaceSymbolClientCapabilities {
@@ -2471,24 +2455,24 @@ export interface FileDelete {
  * Defines how the host (editor) should sync document changes to the language
  * server.
  */
-export namespace TextDocumentSyncKind {
+export enum TextDocumentSyncKind {
 	/**
 	 * Documents should not be synced at all.
 	 */
-	export const None = 0;
+	 None = 0,
 
 	/**
 	 * Documents are synced by always sending the full content
 	 * of the document.
 	 */
-	export const Full = 1;
+	 Full = 1,
 
 	/**
 	 * Documents are synced by sending the full content on open.
 	 * After that only incremental updates to the document are
 	 * send.
 	 */
-	export const Incremental = 2;
+	 Incremental = 2,
 }
 
 export interface TextDocumentSyncOptions {
@@ -2598,26 +2582,25 @@ export interface WillSaveTextDocumentParams {
 /**
  * Represents reasons why a text document is saved.
  */
-export namespace TextDocumentSaveReason {
+export enum TextDocumentSaveReason {
 
 	/**
 	 * Manually triggered, e.g. by the user pressing save, by starting
 	 * debugging, or by an API call.
 	 */
-	export const Manual = 1;
+	  Manual = 1,
 
 	/**
 	 * Automatic after a delay.
 	 */
-	export const AfterDelay = 2;
+	  AfterDelay = 2,
 
 	/**
 	 * When the editor lost focus.
 	 */
-	export const FocusOut = 3;
+	  FocusOut = 3,
 }
 
-export type TextDocumentSaveReason = 1 | 2 | 3;
 
 export interface SaveOptions {
 	/**
@@ -2702,7 +2685,6 @@ export interface TextDocumentSyncClientCapabilities {
 // 	Incremental = 2,
 // }
 
-export type TextDocumentSyncKind = 0 | 1 | 2;
 
 export interface TextDocumentSyncOptions {
 	/**
@@ -2965,26 +2947,25 @@ export interface CompletionParams extends TextDocumentPositionParams,
 /**
  * How a completion was triggered
  */
-export namespace CompletionTriggerKind {
+export enum CompletionTriggerKind {
 	/**
 	 * Completion was triggered by typing an identifier (24x7 code
 	 * complete), manual invocation (e.g Ctrl+Space) or via API.
 	 */
-	export const Invoked: 1 = 1;
+	  Invoked = 1,
 
 	/**
 	 * Completion was triggered by a trigger character specified by
 	 * the `triggerCharacters` properties of the
 	 * `CompletionRegistrationOptions`.
 	 */
-	export const TriggerCharacter: 2 = 2;
+	  TriggerCharacter = 2,
 
 	/**
 	 * Completion was re-triggered as the current completion list is incomplete.
 	 */
-	export const TriggerForIncompleteCompletions: 3 = 3;
+	  TriggerForIncompleteCompletions = 3,
 }
-export type CompletionTriggerKind = 1 | 2 | 3;
 
 
 /**
@@ -3029,11 +3010,11 @@ export interface CompletionList {
  * Defines whether the insert text in a completion item should be interpreted as
  * plain text or a snippet.
  */
-export namespace InsertTextFormat {
+export enum InsertTextFormat {
 	/**
 	 * The primary text to be inserted is treated as a plain string.
 	 */
-	export const PlainText = 1;
+	PlainText = 1,
 
 	/**
 	 * The primary text to be inserted is treated as a snippet.
@@ -3043,10 +3024,8 @@ export namespace InsertTextFormat {
 	 * the end of the snippet. Placeholders with equal identifiers are linked,
 	 * that is typing in one will update others too.
 	 */
-	export const Snippet = 2;
+	Snippet = 2,
 }
-
-export type InsertTextFormat = 1 | 2;
 
 /**
  * Completion item tags are extra annotations that tweak the rendering of a
@@ -3054,14 +3033,12 @@ export type InsertTextFormat = 1 | 2;
  *
  * @since 3.15.0
  */
-export namespace CompletionItemTag {
+export enum CompletionItemTag {
 	/**
 	 * Render a completion as obsolete, usually using a strike-out.
 	 */
-	export const Deprecated = 1;
+	Deprecated = 1,
 }
-
-export type CompletionItemTag = 1;
 
 /**
  * A special text edit to provide an insert and a replace operation.
@@ -3091,7 +3068,7 @@ export interface InsertReplaceEdit {
  *
  * @since 3.16.0
  */
-export namespace InsertTextMode {
+export enum InsertTextMode {
 	/**
 	 * The insertion or replace strings is taken as it is. If the
 	 * value is multi line the lines below the cursor will be
@@ -3099,7 +3076,7 @@ export namespace InsertTextMode {
 	 * The client will not apply any kind of adjustments to the
 	 * string.
 	 */
-	export const asIs: 1 = 1;
+	asIs = 1,
 
 	/**
 	 * The editor adjusts leading whitespace of new lines so that
@@ -3110,10 +3087,8 @@ export namespace InsertTextMode {
 	 * multi line completion item is indented using 2 tabs and all
 	 * following lines inserted will be indented using 2 tabs as well.
 	 */
-	export const adjustIndentation: 2 = 2;
+	adjustIndentation = 2,
 }
-
-export type InsertTextMode = 1 | 2;
 
 export interface CompletionItem {
 	/**
@@ -3447,22 +3422,21 @@ export interface SignatureHelpParams extends TextDocumentPositionParams,
  *
  * @since 3.15.0
  */
-export namespace SignatureHelpTriggerKind {
+export enum SignatureHelpTriggerKind {
 	/**
 	 * Signature help was invoked manually by the user or by a command.
 	 */
-	export const Invoked: 1 = 1;
+	Invoked = 1,
 	/**
 	 * Signature help was triggered by a trigger character.
 	 */
-	export const TriggerCharacter: 2 = 2;
+	TriggerCharacter = 2,
 	/**
 	 * Signature help was triggered by the cursor moving or by the document
 	 * content changing.
 	 */
-	export const ContentChange: 3 = 3;
+	ContentChange = 3,
 }
-export type SignatureHelpTriggerKind = 1 | 2 | 3;
 
 /**
  * Additional information about the context in which a signature help request
@@ -3770,24 +3744,23 @@ export interface DocumentHighlight {
 /**
  * A document highlight kind.
  */
-export namespace DocumentHighlightKind {
+export enum DocumentHighlightKind {
 	/**
 	 * A textual occurrence.
 	 */
-	export const Text = 1;
+	Text = 1,
 
 	/**
 	 * Read-access of a symbol, like reading a variable.
 	 */
-	export const Read = 2;
+	Read = 2,
 
 	/**
 	 * Write-access of a symbol, like writing to a variable.
 	 */
-	export const Write = 3;
+	Write = 3,
 }
 
-export type DocumentHighlightKind = 1 | 2 | 3;
 
 export interface DocumentSymbolClientCapabilities {
 	/**
@@ -3900,15 +3873,13 @@ export enum SymbolKind {
  *
  * @since 3.16.0
  */
-export namespace SymbolTag {
+export enum SymbolTag {
 
 	/**
 	 * Render a symbol as obsolete, usually using a strike-out.
 	 */
-	export const Deprecated: 1 = 1;
+	Deprecated = 1,
 }
-
-export type SymbolTag = 1;
 
 
 /**

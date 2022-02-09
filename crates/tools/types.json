@@ -3017,6 +3017,20 @@
       ],
       "type": "string"
     },
+    "FileChangeType": {
+      "description": "The file event type.",
+      "enum": [
+        1,
+        2,
+        3
+      ],
+      "enumNames": [
+        "Created",
+        "Changed",
+        "Deleted"
+      ],
+      "type": "number"
+    },
     "FileCreate": {
       "additionalProperties": false,
       "description": "Represents information on a file/folder create.",
@@ -3610,6 +3624,19 @@
       },
       "required": [
         "documentSelector"
+      ],
+      "type": "object"
+    },
+    "InitializeError": {
+      "additionalProperties": false,
+      "properties": {
+        "retry": {
+          "description": "Indicates whether the client execute the following retry logic: (1) show the message provided by the ResponseError to the user (2) user selects retry or cancel (3) if user selected retry the initialize method is sent again.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "retry"
       ],
       "type": "object"
     },
@@ -6497,6 +6524,19 @@
         "unregisterations"
       ],
       "type": "object"
+    },
+    "WatchKind": {
+      "enum": [
+        1,
+        2,
+        4
+      ],
+      "enumNames": [
+        "Create",
+        "Change",
+        "Delete"
+      ],
+      "type": "number"
     },
     "WillSaveTextDocumentParams": {
       "additionalProperties": false,
