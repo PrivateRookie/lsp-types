@@ -1,6 +1,6 @@
+use super::*;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use super::*;
 
 #[doc = " Signature help represents the signature of something callable. There can be multiple signature "]
 #[doc = " but only one active and only one active parameter."]
@@ -171,7 +171,7 @@ pub struct SignatureInformation {
     #[doc = " The human-readable doc-comment of this signature. Will be shown in the UI but can be "]
     #[doc = " omitted."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documentation: Option<serde_json::Value>,
+    pub documentation: Option<OneOf<String, MarkupContent>>,
     #[doc = " The label of this signature. Will be shown in the UI."]
     pub label: String,
     #[doc = " The parameters of this signature."]
@@ -357,13 +357,30 @@ pub struct TextDocumentClientCapabilities {
     #[serde(rename = "typeDefinition")]
     pub type_definition: Option<TypeDefinitionClientCapabilities>,
 }
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[doc = " An event describing a change to a text document. If range and rangeLength are omitted the new "]
 #[doc = " text is considered to be the full content of the document."]
-pub type TextDocumentContentChangeEvent = serde_json::Value;
+pub enum TextDocumentContentChangeEvent {
+    Simple {
+        #[doc = "The new text of the whole document."]
+        text: String,
+    },
+    Complex {
+        #[doc = "The range of the document that changed."]
+        range: Range,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        #[serde(rename = "rangeLength")]
+        #[doc = "The optional length of the range that got replaced."]
+        #[doc = "@deprecated use range instead."]
+        range_length: Option<Uinteger>,
+        #[doc = "The new text of the whole document."]
+        text: String,
+    },
+}
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct TextDocumentEdit {
     #[doc = " The edits to be applied."]
-    pub edits: Vec<serde_json::Value>,
+    pub edits: Vec<OneOf<TextEdit, AnnotatedTextEdit>>,
     #[doc = " The text document to change."]
     #[serde(rename = "textDocument")]
     pub text_document: OptionalVersionedTextDocumentIdentifier,
@@ -400,7 +417,7 @@ pub struct TextDocumentRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
     #[serde(rename = "documentSelector")]
-    pub document_selector: serde_json::Value,
+    pub document_selector: Option<DocumentSelector>,
 }
 #[doc = " Represents reasons why a text document is saved."]
 #[derive(Clone, PartialEq, Debug, Serialize_repr, Deserialize_repr)]
@@ -449,6 +466,13 @@ pub enum TextDocumentSyncKind {
     Full = 1,
     Incremental = 2,
 }
+
+impl Default for TextDocumentSyncKind {
+    fn default() -> Self {
+        Self::None
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct TextDocumentSyncOptions {
     #[doc = " Change notifications are sent to the server. See TextDocumentSyncKind.None, "]
@@ -461,6 +485,20 @@ pub struct TextDocumentSyncOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "openClose")]
     pub open_close: Option<bool>,
+    #[doc = "If present will save notifications are sent to the server. If omitted"]
+    #[doc = "the notification should not be sent."]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "willSave")]
+    pub will_save: Option<bool>,
+    #[doc = "If present will save notifications are sent to the server. If omitted"]
+    #[doc = "the notification should not be sent."]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "willSaveWaitUntil")]
+    pub will_save_until: Option<bool>,
+    #[doc = "If present save notifications are sent to the server. If omitted the"]
+    #[doc = "notification should not be sent."]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub save: Option<OneOf<bool, SaveOptions>>,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct TextEdit {
@@ -696,8 +734,17 @@ pub struct WorkspaceEdit {
     #[doc = " `changes` property are supported."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "documentChanges")]
-    pub document_changes: Option<serde_json::Value>,
+    pub document_changes: Option<OneOf<Vec<TextDocumentEdit>, DocumentChange>>,
 }
+
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+pub enum DocumentChange {
+    Edit(TextDocumentEdit),
+    Create(CreateFile),
+    Rename(RenameFile),
+    Delete(DeleteFile),
+}
+
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct WorkspaceEditClientCapabilitiesChangeAnnotationSupport {
     #[doc = " Whether the client groups edits with equal labels into tree nodes, for instance all edits "]
@@ -758,7 +805,7 @@ pub struct WorkspaceFoldersServerCapabilities {
     #[doc = " `client/unregisterCapability` request."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "changeNotifications")]
-    pub change_notifications: Option<serde_json::Value>,
+    pub change_notifications: Option<OneOf<bool, String>>,
     #[doc = " The server has support for workspace folders"]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supported: Option<bool>,
@@ -825,13 +872,11 @@ pub struct WorkspaceSymbolRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-pub type Array = Vec<serde_json::Value>;
 #[doc = " Defines a decimal number. Since decimal numbers are very rare in the language server "]
 #[doc = " specification we denote the exact range with every decimal using the mathematics interval "]
 #[doc = " notation (e.g. [0, 1] denotes all decimals d with 0 <= d <= 1."]
 pub type Decimal = f64;
 #[doc = " Defines an integer number in the range of -2^31 to 2^31 - 1."]
-pub type Integer = f64;
+pub type Integer = i32;
 #[doc = " Defines an unsigned integer number in the range of 0 to 2^31 - 1."]
-pub type Uinteger = f64;
-pub type Lsp = serde_json::Value;
+pub type Uinteger = u32;

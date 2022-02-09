@@ -1,6 +1,6 @@
+use super::*;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use super::*;
 
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ConfigurationItem {
@@ -174,11 +174,12 @@ pub struct DeleteFilesParams {
     #[doc = " An array of all files/folders deleted in this operation."]
     pub files: Vec<FileDelete>,
 }
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct Diagnostic {
     #[doc = " The diagnostic's code, which might appear in the user interface."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub code: Option<serde_json::Value>,
+    pub code: Option<DiagnosticCode>,
     #[doc = " An optional property to describe the error code."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "codeDescription")]
@@ -1014,14 +1015,14 @@ pub struct FormattingOptions {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "trimTrailingWhitespace")]
     pub trim_trailing_whitespace: Option<bool>,
+
+    // TODO
 }
 #[doc = " The result of a hover request."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct Hover {
     #[doc = " The hover's content"]
-    #[serde(default)]
-    #[serde(with = "::schemafy_core::one_or_many")]
-    pub contents: Vec<MarkedString>,
+    pub contents: OneOf3<MarkedString, Vec<MarkedString>, MarkupContent>,
     #[doc = " An optional range is a range inside a text document that is used to visualize a hover, e.g. "]
     #[doc = " by changing the background color."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1155,7 +1156,7 @@ pub struct InitializeParams {
     #[doc = " not been started by another process. If the parent process is not alive then the server "]
     #[doc = " should exit (see exit notification) its process."]
     #[serde(rename = "processId")]
-    pub process_id: serde_json::Value,
+    pub process_id: Option<Integer>,
     #[doc = " The rootPath of the workspace. Is null if no folder is open."]
     #[serde(default)]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1164,7 +1165,7 @@ pub struct InitializeParams {
     #[doc = " The rootUri of the workspace. Is null if no folder is open. If both `rootPath` and "]
     #[doc = " `rootUri` are set `rootUri` wins."]
     #[serde(rename = "rootUri")]
-    pub root_uri: serde_json::Value,
+    pub root_uri: Option<DocumentUri>,
     #[doc = " The initial trace setting. If omitted trace is disabled ('off')."]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub trace: Option<TraceValue>,
@@ -1177,7 +1178,7 @@ pub struct InitializeParams {
     #[doc = " supports workspace folders but none are configured."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "workspaceFolders")]
-    pub workspace_folders: Option<serde_json::Value>,
+    pub workspace_folders: Option<Vec<WorkspaceFolder>>,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct InitializeResultServerInfo {
@@ -1473,7 +1474,7 @@ pub struct OptionalVersionedTextDocumentIdentifier {
     #[doc = " "]
     #[doc = " The version number of a document will increase after each change, including undo/redo. The "]
     #[doc = " number doesn't need to be consecutive."]
-    pub version: serde_json::Value,
+    pub version: Option<Integer>,
 }
 #[doc = " Represents a parameter of a callable-signature. A parameter can have a label and a doc-comment."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -1481,7 +1482,7 @@ pub struct ParameterInformation {
     #[doc = " The human-readable doc-comment of this parameter. Will be shown in the UI but can be "]
     #[doc = " omitted."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documentation: Option<serde_json::Value>,
+    pub documentation: Option<OneOf<String, MarkupContent>>,
     #[doc = " The label of this parameter information."]
     #[doc = " "]
     #[doc = " Either a string or an inclusive start and exclusive end offsets within its containing "]
@@ -1491,7 +1492,7 @@ pub struct ParameterInformation {
     #[doc = " *Note*: a label of type string should be a substring of its containing signature label. Its "]
     #[doc = " intended use case is to highlight the parameter label part in the "]
     #[doc = " `SignatureInformation.label`."]
-    pub label: serde_json::Value,
+    pub label: OneOf<String, Vec<(Uinteger, Uinteger)>>,
 }
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct PartialResultParams {
@@ -1521,7 +1522,7 @@ pub struct PrepareRenameParams {
     pub text_document: TextDocumentIdentifier,
 }
 pub type PrepareSupportDefaultBehavior = f64;
-pub type ProgressToken = serde_json::Value;
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct PublishDiagnosticsClientCapabilitiesTagSupport {
     #[doc = " The tags supported by the client."]
@@ -1743,10 +1744,11 @@ pub struct RenameRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct RequestMessage {
     #[doc = " The request id."]
-    pub id: serde_json::Value,
+    pub id: ReqId,
     pub jsonrpc: String,
     #[doc = " The method to be invoked."]
     pub method: String,
@@ -1781,7 +1783,7 @@ pub struct ResponseMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub error: Option<ResponseError>,
     #[doc = " The request id."]
-    pub id: serde_json::Value,
+    pub id: Option<ReqId>,
     pub jsonrpc: String,
     #[doc = " The result of a request. This member is REQUIRED on success. This member MUST NOT exist if "]
     #[doc = " there was an error invoking the method."]
@@ -2152,13 +2154,14 @@ pub struct ServerCapabilities {
     #[doc = " The server provides call hierarchy support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "callHierarchyProvider")]
-    pub call_hierarchy_provider: Option<serde_json::Value>,
+    pub call_hierarchy_provider:
+        Option<OneOf3<bool, CallHierarchyRegistrationOptions, CallHierarchyOptions>>,
     #[doc = " The server provides code actions. The `CodeActionOptions` return type is only valid if the "]
     #[doc = " client signals code action literal support via the property "]
     #[doc = " `textDocument.codeAction.codeActionLiteralSupport`."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "codeActionProvider")]
-    pub code_action_provider: Option<serde_json::Value>,
+    pub code_action_provider: Option<OneOf<bool, CodeActionOptions>>,
     #[doc = " The server provides code lens."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "codeLensProvider")]
@@ -2166,7 +2169,8 @@ pub struct ServerCapabilities {
     #[doc = " The server provides color provider support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "colorProvider")]
-    pub color_provider: Option<serde_json::Value>,
+    pub color_provider:
+        Option<OneOf<bool, OneOf<DocumentColorOptions, DocumentColorRegistrationOptions>>>,
     #[doc = " The server provides completion support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "completionProvider")]
@@ -2174,19 +2178,20 @@ pub struct ServerCapabilities {
     #[doc = " The server provides go to declaration support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "declarationProvider")]
-    pub declaration_provider: Option<serde_json::Value>,
+    pub declaration_provider:
+        Option<OneOf<bool, OneOf<DeclarationOptions, DeclarationRegistrationOptions>>>,
     #[doc = " The server provides goto definition support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "definitionProvider")]
-    pub definition_provider: Option<serde_json::Value>,
+    pub definition_provider: Option<OneOf<bool, DefinitionOptions>>,
     #[doc = " The server provides document formatting."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "documentFormattingProvider")]
-    pub document_formatting_provider: Option<serde_json::Value>,
+    pub document_formatting_provider: Option<OneOf<bool, DocumentFormattingOptions>>,
     #[doc = " The server provides document highlight support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "documentHighlightProvider")]
-    pub document_highlight_provider: Option<serde_json::Value>,
+    pub document_highlight_provider: Option<OneOf<bool, DocumentHighlightOptions>>,
     #[doc = " The server provides document link support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "documentLinkProvider")]
@@ -2198,11 +2203,11 @@ pub struct ServerCapabilities {
     #[doc = " The server provides document range formatting."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "documentRangeFormattingProvider")]
-    pub document_range_formatting_provider: Option<serde_json::Value>,
+    pub document_range_formatting_provider: Option<OneOf<bool, DocumentRangeFormattingOptions>>,
     #[doc = " The server provides document symbol support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "documentSymbolProvider")]
-    pub document_symbol_provider: Option<serde_json::Value>,
+    pub document_symbol_provider: Option<OneOf<bool, DocumentSymbolOptions>>,
     #[doc = " The server provides execute command support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "executeCommandProvider")]
@@ -2213,40 +2218,45 @@ pub struct ServerCapabilities {
     #[doc = " The server provides folding provider support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "foldingRangeProvider")]
-    pub folding_range_provider: Option<serde_json::Value>,
+    pub folding_range_provider:
+        Option<OneOf<bool, OneOf<FoldingRangeOptions, FoldingRangeRegistrationOptions>>>,
     #[doc = " The server provides hover support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "hoverProvider")]
-    pub hover_provider: Option<serde_json::Value>,
+    pub hover_provider: Option<OneOf<bool, HoverOptions>>,
     #[doc = " The server provides goto implementation support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "implementationProvider")]
-    pub implementation_provider: Option<serde_json::Value>,
+    pub implementation_provider:
+        Option<OneOf3<bool, ImplementationOptions, ImplementationRegistrationOptions>>,
     #[doc = " The server provides linked editing range support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "linkedEditingRangeProvider")]
-    pub linked_editing_range_provider: Option<serde_json::Value>,
+    pub linked_editing_range_provider:
+        Option<OneOf3<bool, LinkedEditingRangeOptions, LinkedEditingRangeRegistrationOptions>>,
     #[doc = " Whether server provides moniker support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "monikerProvider")]
-    pub moniker_provider: Option<serde_json::Value>,
+    pub moniker_provider: Option<OneOf3<bool, MonikerOptions, MonikerRegistrationOptions>>,
     #[doc = " The server provides find references support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "referencesProvider")]
-    pub references_provider: Option<serde_json::Value>,
+    pub references_provider: Option<OneOf<bool, ReferenceOptions>>,
     #[doc = " The server provides rename support. RenameOptions may only be specified if the client "]
     #[doc = " states that it supports `prepareSupport` in its initial `initialize` request."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "renameProvider")]
-    pub rename_provider: Option<serde_json::Value>,
+    pub rename_provider: Option<OneOf<bool, RenameOptions>>,
     #[doc = " The server provides selection range support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "selectionRangeProvider")]
-    pub selection_range_provider: Option<serde_json::Value>,
+    pub selection_range_provider:
+        Option<OneOf3<bool, SelectionRangeOptions, SelectionRangeRegistrationOptions>>,
     #[doc = " The server provides semantic tokens support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "semanticTokensProvider")]
-    pub semantic_tokens_provider: Option<serde_json::Value>,
+    pub semantic_tokens_provider:
+        Option<OneOf<SemanticTokensOptions, SemanticTokensRegistrationOptions>>,
     #[doc = " The server provides signature help support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "signatureHelpProvider")]
@@ -2254,21 +2264,26 @@ pub struct ServerCapabilities {
     #[doc = " Defines how text documents are synced. Is either a detailed structure defining each "]
     #[doc = " notification or for backwards compatibility the TextDocumentSyncKind number. If omitted it "]
     #[doc = " defaults to `TextDocumentSyncKind.None`."]
-    #[serde(skip_serializing_if = "Option::is_none")]
+    // #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default = "TextDocumentSync::opt_other_default")]
     #[serde(rename = "textDocumentSync")]
-    pub text_document_sync: Option<serde_json::Value>,
+    pub text_document_sync: Option<TextDocumentSync>,
     #[doc = " The server provides goto type definition support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "typeDefinitionProvider")]
-    pub type_definition_provider: Option<serde_json::Value>,
+    pub type_definition_provider:
+        Option<OneOf<bool, OneOf<TypeDefinitionOptions, TypeDefinitionRegistrationOptions>>>,
     #[doc = " Workspace specific server capabilities"]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub workspace: Option<ServerCapabilitiesWorkspace>,
     #[doc = " The server provides workspace symbol support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "workspaceSymbolProvider")]
-    pub workspace_symbol_provider: Option<serde_json::Value>,
+    pub workspace_symbol_provider: Option<OneOf<bool, WorkspaceSymbolOptions>>,
 }
+
+pub type TextDocumentSync = OneOf<TextDocumentSyncOptions, TextDocumentSyncKind>;
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SetTraceParams {
     #[doc = " The new value that should be assigned to the trace setting."]

@@ -1,6 +1,6 @@
+use super::*;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-use super::*;
 
 #[doc = " A special text edit with an additional change annotation."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -155,7 +155,7 @@ pub struct CallHierarchyRegistrationOptions {
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct CancelParams {
     #[doc = " The request id to cancel."]
-    pub id: serde_json::Value,
+    pub id: Option<ReqId>,
 }
 #[doc = " Additional information that describes document changes."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -784,7 +784,7 @@ pub struct CompletionItem {
     pub detail: Option<String>,
     #[doc = " A human-readable string that represents a doc-comment."]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub documentation: Option<serde_json::Value>,
+    pub documentation: Option<OneOf<String, MarkupContent>>,
     #[doc = " A string that should be used when filtering a set of completion items. When `falsy` the "]
     #[doc = " label is used as the filter text for this item."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -852,7 +852,7 @@ pub struct CompletionItem {
     #[doc = " position."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "textEdit")]
-    pub text_edit: Option<serde_json::Value>,
+    pub text_edit: Option<OneOf<TextEdit, InsertReplaceEdit>>,
 }
 #[doc = " The kind of a completion entry."]
 #[derive(Clone, PartialEq, Debug, Serialize_repr, Deserialize_repr)]
