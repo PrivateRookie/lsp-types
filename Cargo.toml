@@ -1,2 +1,2 @@
 [workspace]
-members = ["crates/types", "crates/tools"]
+members = ["crates/types", "crates/tools", "crates/io"]
