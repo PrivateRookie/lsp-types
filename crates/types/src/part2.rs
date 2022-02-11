@@ -1374,6 +1374,8 @@ pub enum MarkupKind {
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct Message {
     pub jsonrpc: String,
+    #[serde(flatten)]
+    pub data: serde_json::Value,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct MessageActionItem {
