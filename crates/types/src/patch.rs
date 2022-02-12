@@ -1,5 +1,11 @@
+use crate::ResponseMessage;
+
 use super::Integer;
 use serde::{Deserialize, Serialize};
+
+#[doc = "empty response data"]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+pub struct Empty {}
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
@@ -104,5 +110,17 @@ pub struct ProgressParams {
 impl<T: Default, U, X> Default for OneOf3<T, U, X> {
     fn default() -> Self {
         OneOf3::One(T::default())
+    }
+}
+
+impl ReqId {
+    pub fn ok_resp<T: serde::Serialize, R: Into<Option<T>>>(self, result: R) -> ResponseMessage {
+        let result = result.into().map(|v| serde_json::to_value(v).unwrap());
+        ResponseMessage {
+            error: None,
+            id: Some(self),
+            jsonrpc: "2.0".to_string(),
+            result,
+        }
     }
 }

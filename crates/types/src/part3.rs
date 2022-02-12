@@ -795,6 +795,9 @@ pub struct WorkspaceFolder {
     #[doc = " The associated URI for this workspace folder."]
     pub uri: DocumentUri,
 }
+
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+pub struct WorkspaceFolderParams {}
 #[doc = " The workspace folder change event."]
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct WorkspaceFoldersChangeEvent {

@@ -55,7 +55,7 @@ impl<S: Read + Write> ServerCodec<S> {
 
     fn parse_header(&mut self, headers: String) -> IOResult<()> {
         for header in headers.split("\r\n") {
-            let mut segs = header.split(":");
+            let mut segs = header.split(':');
             let key = segs.next().unwrap();
             if key == "Content-Length" {
                 self.read_content_length = segs.next().unwrap().trim().parse().unwrap();
@@ -135,7 +135,7 @@ impl<S: Read + Write> Server<S> {
     }
 
     pub fn on_req(&mut self, req: RequestMessage) -> IOResult<()> {
-        InitializeParams::handle(req, self, |server, id, _| {
+        InitializeParams::on_req(req, self, |server, id, _| {
             let ret = InitializeResult {
                 capabilities: ServerCapabilities {
                     completion_provider: Some(CompletionOptions {
@@ -151,10 +151,10 @@ impl<S: Read + Write> Server<S> {
                     version: Some("0.0.1".to_string()),
                 }),
             };
-            server.resp(ResponseMessage::ok_resp(id, ret))
+            server.resp(id.ok_resp(ret))
         })
         .map_or(|req| {
-            CompletionParams::handle(req, self, |server, id, _| {
+            CompletionParams::on_req(req, self, |server, id, _| {
                 let ret = CompletionItem {
                     label: "demo".to_string(),
                     detail: Some("that's ok".to_string()),
@@ -162,13 +162,13 @@ impl<S: Read + Write> Server<S> {
                     kind: Some(CompletionItemKind::Keyword),
                     ..Default::default()
                 };
-                server.resp(ResponseMessage::ok_resp(id, vec![ret]))
+                server.resp(id.ok_resp(vec![ret]))
             })
         })
         .flat_or()
         .unify(|req| {
             tracing::warn!("unhandled request {:#?}", req);
-            self.resp(ResponseMessage::ok_resp(req.id, serde_json::Value::Null))
+            self.resp(req.id.ok_resp(serde_json::Value::Null))
         })
     }
 

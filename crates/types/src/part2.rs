@@ -773,6 +773,10 @@ pub struct ExecuteCommandRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
+
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+pub struct ExitParams {}
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub enum FailureHandlingKind {
     #[serde(rename = "abort")]
@@ -1538,7 +1542,30 @@ pub struct PrepareRenameParams {
     #[serde(rename = "textDocument")]
     pub text_document: TextDocumentIdentifier,
 }
-pub type PrepareSupportDefaultBehavior = f64;
+
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[repr(i64)]
+pub enum PrepareSupportDefaultBehavior {
+    Identifier = 1,
+}
+
+impl Default for PrepareSupportDefaultBehavior {
+    fn default() -> Self {
+        Self::Identifier
+    }
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+pub struct PrepareRenameResult1 {
+    pub range: Range,
+    pub placeholder: String,
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+pub struct PrepareRenameResult2 {
+    #[serde(rename = "defaultBehavior")]
+    pub default_behavior: bool,
+}
 
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct PublishDiagnosticsClientCapabilitiesTagSupport {
@@ -2067,6 +2094,9 @@ pub struct SemanticTokensOptionsFull {
     pub delta: Option<bool>,
 }
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+pub struct SemanticTokensRefreshParams {}
+
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -2380,3 +2410,6 @@ pub struct ShowMessageRequestParams {
     #[serde(rename = "type")]
     pub type_: MessageType,
 }
+
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+pub struct ShutdownParams {}

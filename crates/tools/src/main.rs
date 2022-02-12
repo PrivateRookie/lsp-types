@@ -23,7 +23,7 @@ fn main() {
         Args::Fetch => {
             // let content = fetch_content();
             let content = include_str!("content.md");
-            let ts = extract_ts(&content);
+            let ts = extract_ts(content);
             println!("{}", ts);
         }
         Args::Gen { source } => {
@@ -38,7 +38,7 @@ fn main() {
                 "use serde::{{Deserialize, Serialize}};\n
                 use serde_repr::{{Deserialize_repr, Serialize_repr}};\n\n
                 {}",
-                code.to_string()
+                code
             );
         }
     }
@@ -62,14 +62,11 @@ fn extract_ts(content: &str) -> String {
 }
 
 fn iter_nodes<'a>(node: &'a AstNode<'a>, ts: &mut Vec<u8>) {
-    match &node.data.borrow().value {
-        comrak::nodes::NodeValue::CodeBlock(blk) => {
-            if blk.info == "typescript".as_bytes() || blk.info == "ts".as_bytes() {
-                ts.extend_from_slice(&blk.literal);
-                ts.push('\n' as u8);
-            }
+    if let comrak::nodes::NodeValue::CodeBlock(blk) = &node.data.borrow().value {
+        if blk.info == "typescript".as_bytes() || blk.info == "ts".as_bytes() {
+            ts.extend_from_slice(&blk.literal);
+            ts.push(b'\n');
         }
-        _ => {}
     }
     for c in node.children() {
         iter_nodes(c, ts);
