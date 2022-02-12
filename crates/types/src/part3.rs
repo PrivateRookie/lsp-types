@@ -385,12 +385,12 @@ pub struct TextDocumentEdit {
     #[serde(rename = "textDocument")]
     pub text_document: OptionalVersionedTextDocumentIdentifier,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct TextDocumentIdentifier {
     #[doc = " The text document's URI."]
     pub uri: DocumentUri,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct TextDocumentItem {
     #[doc = " The text document's language identifier."]
     #[serde(rename = "languageId")]
@@ -519,6 +519,13 @@ pub enum TraceValue {
     #[serde(rename = "verbose")]
     Verbose,
 }
+
+impl Default for TraceValue {
+    fn default() -> Self {
+        Self::Off
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct TypeDefinitionClientCapabilities {
     #[doc = " Whether implementation supports dynamic registration. If this is set to `true` the client "]
@@ -597,7 +604,7 @@ pub struct Unregistration {
 pub struct UnregistrationParams {
     pub unregisterations: Vec<Unregistration>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct VersionedTextDocumentIdentifier {
     #[doc = " The text document's URI."]
     pub uri: DocumentUri,
@@ -789,7 +796,7 @@ pub struct WorkspaceFolder {
     pub uri: DocumentUri,
 }
 #[doc = " The workspace folder change event."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct WorkspaceFoldersChangeEvent {
     #[doc = " The array of added workspace folders"]
     pub added: Vec<WorkspaceFolder>,

@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[doc = " A special text edit with an additional change annotation."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct AnnotatedTextEdit {
     #[doc = " The actual annotation identifier."]
     #[serde(rename = "annotationId")]
@@ -15,7 +15,7 @@ pub struct AnnotatedTextEdit {
     #[doc = " range where start === end."]
     pub range: Range,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ApplyWorkspaceEditParams {
     #[doc = " The edits to apply."]
     pub edit: WorkspaceEdit,
@@ -24,7 +24,7 @@ pub struct ApplyWorkspaceEditParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub label: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ApplyWorkspaceEditResponse {
     #[doc = " Indicates whether the edit was applied or not."]
     pub applied: bool,
@@ -126,7 +126,7 @@ pub struct CallHierarchyOutgoingCallsParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CallHierarchyPrepareParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -138,7 +138,7 @@ pub struct CallHierarchyPrepareParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CallHierarchyRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -152,13 +152,13 @@ pub struct CallHierarchyRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CancelParams {
     #[doc = " The request id to cancel."]
     pub id: Option<ReqId>,
 }
 #[doc = " Additional information that describes document changes."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ChangeAnnotation {
     #[doc = " A human-readable string which is rendered less prominent in the user interface."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -295,7 +295,7 @@ pub struct ClientCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub workspace: Option<ClientCapabilitiesWorkspace>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionDisabled {
     #[doc = " Human readable description of why the code action is currently disabled."]
     #[doc = " "]
@@ -307,7 +307,7 @@ pub struct CodeActionDisabled {
 #[doc = " "]
 #[doc = " A CodeAction must set either `edit` and/or a `command`. If both are supplied, the `edit` is "]
 #[doc = " applied first, then the `command` is executed."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeAction {
     #[doc = " A command this code action executes. If a code action provides an edit and a command, first "]
     #[doc = " the edit is executed and then the command."]
@@ -354,7 +354,7 @@ pub struct CodeAction {
     #[doc = " A short, human-readable, title for this code action."]
     pub title: String,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionClientCapabilitiesCodeActionLiteralSupportCodeActionKind {
     #[doc = " The code action kind values the client supports. When this property exists the client also "]
     #[doc = " guarantees that it will handle values outside its set gracefully and falls back to a "]
@@ -362,13 +362,13 @@ pub struct CodeActionClientCapabilitiesCodeActionLiteralSupportCodeActionKind {
     #[serde(rename = "valueSet")]
     pub value_set: Vec<CodeActionKind>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionClientCapabilitiesCodeActionLiteralSupport {
     #[doc = " The code action kind is supported with the following value set."]
     #[serde(rename = "codeActionKind")]
     pub code_action_kind: CodeActionClientCapabilitiesCodeActionLiteralSupportCodeActionKind,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionClientCapabilitiesResolveSupport {
     #[doc = " The properties that a client can resolve lazily."]
     pub properties: Vec<String>,
@@ -410,7 +410,7 @@ pub struct CodeActionClientCapabilities {
     pub resolve_support: Option<CodeActionClientCapabilitiesResolveSupport>,
 }
 #[doc = " Contains additional diagnostic information about the context in which a code action is run."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionContext {
     #[doc = " An array of diagnostics known on the client side overlapping the range provided to the "]
     #[doc = " `textDocument/codeAction` request. They are provided so that the server knows which errors "]
@@ -452,7 +452,7 @@ pub struct CodeActionOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " Params for the CodeActionRequest"]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionParams {
     #[doc = " Context carrying additional information."]
     pub context: CodeActionContext,
@@ -471,7 +471,7 @@ pub struct CodeActionParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeActionRegistrationOptions {
     #[doc = " CodeActionKinds that this server may return."]
     #[doc = " "]
@@ -493,7 +493,7 @@ pub struct CodeActionRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " Structure to capture a description for an error code."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeDescription {
     #[doc = " An URI to open with more information about the diagnostic error."]
     pub href: Uri,
@@ -503,7 +503,7 @@ pub struct CodeDescription {
 #[doc = " "]
 #[doc = " A code lens is _unresolved_ when no command is associated to it. For performance reasons the "]
 #[doc = " creation of a code lens and resolving should be done in two stages."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeLens {
     #[doc = " The command this code lens represents."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -532,7 +532,7 @@ pub struct CodeLensOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeLensParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -547,7 +547,7 @@ pub struct CodeLensParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CodeLensRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -574,7 +574,7 @@ pub struct CodeLensWorkspaceClientCapabilities {
     pub refresh_support: Option<bool>,
 }
 #[doc = " Represents a color in RGBA space."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Color {
     #[doc = " The alpha component of this color in the range [0-1]."]
     pub alpha: Decimal,
@@ -585,14 +585,14 @@ pub struct Color {
     #[doc = " The red component of this color in the range [0-1]."]
     pub red: Decimal,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ColorInformation {
     #[doc = " The actual color value for this color range."]
     pub color: Color,
     #[doc = " The range in the document where this color appears."]
     pub range: Range,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ColorPresentation {
     #[doc = " An optional array of additional [text edits](#TextEdit) that are applied when selecting "]
     #[doc = " this color presentation. Edits must not overlap with the main "]
@@ -609,7 +609,7 @@ pub struct ColorPresentation {
     #[serde(rename = "textEdit")]
     pub text_edit: Option<TextEdit>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ColorPresentationParams {
     #[doc = " The color information to request presentations for."]
     pub color: Color,
@@ -628,7 +628,7 @@ pub struct ColorPresentationParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Command {
     #[doc = " Arguments that the command handler should be invoked with."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -638,17 +638,17 @@ pub struct Command {
     #[doc = " Title of the command, like `save`."]
     pub title: String,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionClientCapabilitiesCompletionItemInsertTextModeSupport {
     #[serde(rename = "valueSet")]
     pub value_set: Vec<InsertTextMode>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionClientCapabilitiesCompletionItemResolveSupport {
     #[doc = " The properties that a client can resolve lazily."]
     pub properties: Vec<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionClientCapabilitiesCompletionItemTagSupport {
     #[doc = " The tags supported by the client."]
     #[serde(rename = "valueSet")]
@@ -748,7 +748,7 @@ pub struct CompletionContext {
     #[serde(rename = "triggerKind")]
     pub trigger_kind: CompletionTriggerKind,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionItem {
     #[doc = " An optional array of additional text edits that are applied when selecting this completion. "]
     #[doc = " Edits must not overlap (including the same insert position) with the main edit nor with "]
@@ -887,7 +887,7 @@ pub enum CompletionItemKind {
 #[doc = " Completion item tags are extra annotations that tweak the rendering of a completion item."]
 pub type CompletionItemTag = f64;
 #[doc = " Represents a collection of [completion items](#CompletionItem) to be presented in the editor."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionList {
     #[doc = " This list is not complete. Further typing should result in recomputing this list."]
     #[doc = " "]
@@ -929,7 +929,7 @@ pub struct CompletionOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionParams {
     #[doc = " The completion context. This is only available if the client specifies to send this using "]
     #[doc = " the client capability `completion.contextSupport === true`"]
@@ -950,7 +950,7 @@ pub struct CompletionParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CompletionRegistrationOptions {
     #[doc = " The list of all possible characters that commit a completion. This field can be used if "]
     #[doc = " clients don't support individual commit characters per completion item. See client "]

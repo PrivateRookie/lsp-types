@@ -1,6 +1,10 @@
 use bytes::{Buf, BytesMut};
 use clap::Parser;
-use lsp_ty::{NotificationMessage, OneOf, RequestMessage, ResponseMessage};
+use lsp_ty::{
+    CompletionItem, CompletionItemKind, CompletionOptions, CompletionParams, FromReq,
+    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf,
+    RequestMessage, ResponseMessage, ServerCapabilities,
+};
 use std::{
     io::{Read, Write},
     net::TcpListener,
@@ -16,7 +20,8 @@ pub struct ServerCodec<S: Read + Write> {
     stream: S,
     read_content_length: usize,
     content_type: String,
-    read_buf: BytesMut,
+    read_buf: [u8; BUF_SIZE],
+    read_data: BytesMut,
 }
 
 impl<S: Read + Write> ServerCodec<S> {
@@ -25,22 +30,25 @@ impl<S: Read + Write> ServerCodec<S> {
             stream,
             read_content_length: 0,
             content_type: "application/vscode-jsonrpc; charset=utf-8".to_string(),
-            read_buf: BytesMut::with_capacity(BUF_SIZE),
+            read_data: BytesMut::with_capacity(BUF_SIZE),
+            read_buf: [0; BUF_SIZE],
         }
     }
 }
 
 impl<S: Read + Write> ServerCodec<S> {
     fn poll(&mut self) -> IOResult<usize> {
-        self.stream.read(&mut self.read_buf)
+        let count = self.stream.read(&mut self.read_buf)?;
+        self.read_data.extend_from_slice(&self.read_buf[..count]);
+        Ok(count)
     }
 
     fn consume_body(&mut self) -> IOResult<OneOf<RequestMessage, NotificationMessage>> {
         let msg: OneOf<RequestMessage, NotificationMessage> =
-            serde_json::from_slice(&self.read_buf[..self.read_content_length])
+            serde_json::from_slice(&self.read_data[..self.read_content_length])
                 .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
         // reset state after read
-        self.read_buf.advance(self.read_content_length);
+        self.read_data.advance(self.read_content_length);
         self.read_content_length = 0;
         Ok(msg)
     }
@@ -68,12 +76,12 @@ impl<S: Read + Write> ServerCodec<S> {
     pub fn receive(&mut self) -> IOResult<OneOf<RequestMessage, NotificationMessage>> {
         loop {
             if let Some(stop_at) = self
-                .read_buf
+                .read_data
                 .windows(4)
                 .position(|s| s == [b'\r', b'\n', b'\r', b'\n'])
             {
-                let headers = String::from_utf8(self.read_buf[..stop_at].to_vec()).unwrap();
-                self.read_buf.advance(stop_at + 4);
+                let headers = String::from_utf8(self.read_data[..stop_at].to_vec()).unwrap();
+                self.read_data.advance(stop_at + 4);
                 self.parse_header(headers)?;
                 break;
             } else {
@@ -81,7 +89,7 @@ impl<S: Read + Write> ServerCodec<S> {
             }
         }
 
-        while self.read_content_length > self.read_buf.len() {
+        while self.read_content_length > self.read_data.len() {
             self.poll()?;
         }
 
@@ -127,12 +135,45 @@ impl<S: Read + Write> Server<S> {
     }
 
     pub fn on_req(&mut self, req: RequestMessage) -> IOResult<()> {
-        tracing::debug!("{:?}", req);
-        Ok(())
+        InitializeParams::handle(req, self, |server, id, _| {
+            let ret = InitializeResult {
+                capabilities: ServerCapabilities {
+                    completion_provider: Some(CompletionOptions {
+                        all_commit_characters: None,
+                        resolve_provider: None,
+                        trigger_characters: Some(vec!["$".to_string()]),
+                        work_done_progress: None,
+                    }),
+                    ..Default::default()
+                },
+                server_info: Some(InitializeResultServerInfo {
+                    name: "yaya-server".to_string(),
+                    version: Some("0.0.1".to_string()),
+                }),
+            };
+            server.resp(ResponseMessage::ok_resp(id, ret))
+        })
+        .map_or(|req| {
+            CompletionParams::handle(req, self, |server, id, _| {
+                let ret = CompletionItem {
+                    label: "demo".to_string(),
+                    detail: Some("that's ok".to_string()),
+                    insert_text: Some("yaya".to_string()),
+                    kind: Some(CompletionItemKind::Keyword),
+                    ..Default::default()
+                };
+                server.resp(ResponseMessage::ok_resp(id, vec![ret]))
+            })
+        })
+        .flat_or()
+        .unify(|req| {
+            tracing::warn!("unhandled request {:#?}", req);
+            self.resp(ResponseMessage::ok_resp(req.id, serde_json::Value::Null))
+        })
     }
 
     pub fn on_notify(&mut self, notice: NotificationMessage) -> IOResult<()> {
-        tracing::debug!("{:?}", notice);
+        tracing::info!("{:#?}", notice);
         Ok(())
     }
 
@@ -184,6 +225,7 @@ fn main() -> IOResult<()> {
         match conn {
             Ok(conn) => {
                 let mut server = Server::new(conn);
+                tracing::info!("launching new lsp server...");
                 server.run()?;
             }
             Err(e) => {

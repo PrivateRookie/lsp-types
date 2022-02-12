@@ -12,12 +12,12 @@ pub struct ConfigurationItem {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub section: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ConfigurationParams {
     pub items: Vec<ConfigurationItem>,
 }
 #[doc = " Create file operation"]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFile {
     #[doc = " An optional annotation identifer describing the operation."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -43,7 +43,7 @@ pub struct CreateFileOptions {
     pub overwrite: Option<bool>,
 }
 #[doc = " The parameters sent in notifications/requests for user-initiated creation of files."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct CreateFilesParams {
     #[doc = " An array of all files/folders created in this operation."]
     pub files: Vec<FileCreate>,
@@ -67,7 +67,7 @@ pub struct DeclarationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DeclarationParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -84,7 +84,7 @@ pub struct DeclarationParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DeclarationRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -115,7 +115,7 @@ pub struct DefinitionOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DefinitionParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -132,7 +132,7 @@ pub struct DefinitionParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DefinitionRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -143,7 +143,7 @@ pub struct DefinitionRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " Delete file operation"]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DeleteFile {
     #[doc = " An optional annotation identifer describing the operation."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -169,13 +169,13 @@ pub struct DeleteFileOptions {
     pub recursive: Option<bool>,
 }
 #[doc = " The parameters sent in notifications/requests for user-initiated deletes of files."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DeleteFilesParams {
     #[doc = " An array of all files/folders deleted in this operation."]
     pub files: Vec<FileDelete>,
 }
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Diagnostic {
     #[doc = " The diagnostic's code, which might appear in the user interface."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -212,7 +212,7 @@ pub struct Diagnostic {
 #[doc = " Represents a related message and source code location for a diagnostic. This should be used to "]
 #[doc = " point to code locations that cause or are related to a diagnostics, e.g when duplicating a "]
 #[doc = " symbol in a scope."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DiagnosticRelatedInformation {
     #[doc = " The location of this related diagnostic information."]
     pub location: Location,
@@ -241,12 +241,12 @@ pub struct DidChangeConfigurationClientCapabilities {
     #[serde(rename = "dynamicRegistration")]
     pub dynamic_registration: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidChangeConfigurationParams {
     #[doc = " The actual changed settings"]
     pub settings: serde_json::Value,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidChangeTextDocumentParams {
     #[doc = " The actual content changes. The content changes describe single state changes to the "]
     #[doc = " document. So if there are two content changes c1 (at array index 0) and c2 (at array index "]
@@ -274,35 +274,35 @@ pub struct DidChangeWatchedFilesClientCapabilities {
     #[serde(rename = "dynamicRegistration")]
     pub dynamic_registration: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidChangeWatchedFilesParams {
     #[doc = " The actual file events."]
     pub changes: Vec<FileEvent>,
 }
 #[doc = " Describe options to be used when registering for file system change events."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidChangeWatchedFilesRegistrationOptions {
     #[doc = " The watchers to register."]
     pub watchers: Vec<FileSystemWatcher>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidChangeWorkspaceFoldersParams {
     #[doc = " The actual workspace folder change event."]
     pub event: WorkspaceFoldersChangeEvent,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidCloseTextDocumentParams {
     #[doc = " The document that was closed."]
     #[serde(rename = "textDocument")]
     pub text_document: TextDocumentIdentifier,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidOpenTextDocumentParams {
     #[doc = " The document that was opened."]
     #[serde(rename = "textDocument")]
     pub text_document: TextDocumentItem,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DidSaveTextDocumentParams {
     #[doc = " Optional the content when saved. Depends on the includeText value when the save "]
     #[doc = " notification was requested."]
@@ -325,7 +325,7 @@ pub struct DocumentColorOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentColorParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -340,7 +340,7 @@ pub struct DocumentColorParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentColorRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -390,7 +390,7 @@ pub struct DocumentFormattingOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentFormattingParams {
     #[doc = " The format options."]
     pub options: FormattingOptions,
@@ -402,7 +402,7 @@ pub struct DocumentFormattingParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentFormattingRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -414,7 +414,7 @@ pub struct DocumentFormattingRegistrationOptions {
 }
 #[doc = " A document highlight is a range inside a text document which deserves special attention. "]
 #[doc = " Usually a document highlight is visualized by changing the background color of its range."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentHighlight {
     #[doc = " The highlight kind, default is DocumentHighlightKind.Text."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -443,7 +443,7 @@ pub struct DocumentHighlightOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentHighlightParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -460,7 +460,7 @@ pub struct DocumentHighlightParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentHighlightRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -472,7 +472,7 @@ pub struct DocumentHighlightRegistrationOptions {
 }
 #[doc = " A document link is a range in a text document that links to an internal or external resource, "]
 #[doc = " like another text document or a web site."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentLink {
     #[doc = " A data entry field that is preserved on a document link between a DocumentLinkRequest and a "]
     #[doc = " DocumentLinkResolveRequest."]
@@ -512,7 +512,7 @@ pub struct DocumentLinkOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentLinkParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -527,7 +527,7 @@ pub struct DocumentLinkParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentLinkRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -548,7 +548,7 @@ pub struct DocumentOnTypeFormattingClientCapabilities {
     #[serde(rename = "dynamicRegistration")]
     pub dynamic_registration: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentOnTypeFormattingOptions {
     #[doc = " A character on which formatting should be triggered, like `}`."]
     #[serde(rename = "firstTriggerCharacter")]
@@ -558,7 +558,7 @@ pub struct DocumentOnTypeFormattingOptions {
     #[serde(rename = "moreTriggerCharacter")]
     pub more_trigger_character: Option<Vec<String>>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentOnTypeFormattingParams {
     #[doc = " The character that has been typed."]
     pub ch: String,
@@ -570,7 +570,7 @@ pub struct DocumentOnTypeFormattingParams {
     #[serde(rename = "textDocument")]
     pub text_document: TextDocumentIdentifier,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentOnTypeFormattingRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -597,7 +597,7 @@ pub struct DocumentRangeFormattingOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentRangeFormattingParams {
     #[doc = " The format options"]
     pub options: FormattingOptions,
@@ -611,7 +611,7 @@ pub struct DocumentRangeFormattingParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentRangeFormattingRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -665,7 +665,7 @@ pub struct DocumentSymbolClientCapabilitiesSymbolKind {
     #[serde(rename = "valueSet")]
     pub value_set: Option<Vec<SymbolKind>>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentSymbolClientCapabilitiesTagSupport {
     #[doc = " The tags supported by the client."]
     #[serde(rename = "valueSet")]
@@ -707,7 +707,7 @@ pub struct DocumentSymbolOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentSymbolParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -722,7 +722,7 @@ pub struct DocumentSymbolParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct DocumentSymbolRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -744,7 +744,7 @@ pub struct ExecuteCommandClientCapabilities {
     #[serde(rename = "dynamicRegistration")]
     pub dynamic_registration: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ExecuteCommandOptions {
     #[doc = " The commands to be executed on the server"]
     pub commands: Vec<String>,
@@ -752,7 +752,7 @@ pub struct ExecuteCommandOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ExecuteCommandParams {
     #[doc = " Arguments that the command should be invoked with."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -765,7 +765,7 @@ pub struct ExecuteCommandParams {
     pub work_done_token: Option<ProgressToken>,
 }
 #[doc = " Execute command registration options."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ExecuteCommandRegistrationOptions {
     #[doc = " The commands to be executed on the server"]
     pub commands: Vec<String>,
@@ -793,19 +793,19 @@ pub enum FileChangeType {
     Deleted = 3,
 }
 #[doc = " Represents information on a file/folder create."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileCreate {
     #[doc = " A file:// URI for the location of the file/folder being created."]
     pub uri: String,
 }
 #[doc = " Represents information on a file/folder delete."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileDelete {
     #[doc = " A file:// URI for the location of the file/folder being deleted."]
     pub uri: String,
 }
 #[doc = " An event describing a file change."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileEvent {
     #[doc = " The change type."]
     #[serde(rename = "type")]
@@ -815,7 +815,7 @@ pub struct FileEvent {
 }
 #[doc = " A filter to describe in which file operation requests or notifications the server is interested "]
 #[doc = " in."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileOperationFilter {
     #[doc = " The actual file operation pattern."]
     pub pattern: FileOperationPattern,
@@ -825,7 +825,7 @@ pub struct FileOperationFilter {
 }
 #[doc = " A pattern to describe in which file operation requests or notifications the server is "]
 #[doc = " interested in."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileOperationPattern {
     #[doc = " The glob pattern to match. Glob patterns can have the following syntax:"]
     #[doc = " - `*` to match one or more characters in a path segment"]
@@ -864,13 +864,13 @@ pub struct FileOperationPatternOptions {
     pub ignore_case: Option<bool>,
 }
 #[doc = " The options to register for file operations."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileOperationRegistrationOptions {
     #[doc = " The actual filters."]
     pub filters: Vec<FileOperationFilter>,
 }
 #[doc = " Represents information on a file/folder rename."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileRename {
     #[doc = " A file:// URI for the new location of the file/folder being renamed."]
     #[serde(rename = "newUri")]
@@ -879,7 +879,7 @@ pub struct FileRename {
     #[serde(rename = "oldUri")]
     pub old_uri: String,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FileSystemWatcher {
     #[doc = " The glob pattern to watch."]
     #[doc = " "]
@@ -902,7 +902,7 @@ pub struct FileSystemWatcher {
 }
 #[doc = " Represents a folding range. To be valid, start and end line must be bigger than zero and "]
 #[doc = " smaller than the number of lines in the document. Clients are free to ignore invalid ranges."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FoldingRange {
     #[doc = " The zero-based character offset before the folded range ends. If not defined, defaults to "]
     #[doc = " the length of the end line."]
@@ -965,7 +965,7 @@ pub struct FoldingRangeOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FoldingRangeParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -980,7 +980,7 @@ pub struct FoldingRangeParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FoldingRangeRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -995,7 +995,7 @@ pub struct FoldingRangeRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " Value-object describing what options formatting should use."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct FormattingOptions {
     #[doc = " Insert a newline character at the end of the file if one does not exist."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1020,7 +1020,7 @@ pub struct FormattingOptions {
     pub extra: std::collections::BTreeMap<String, OneOf3<bool, Integer, String>>,
 }
 #[doc = " The result of a hover request."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Hover {
     #[doc = " The hover's content"]
     pub contents: OneOf3<MarkedString, Vec<MarkedString>, MarkupContent>,
@@ -1047,7 +1047,7 @@ pub struct HoverOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct HoverParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -1059,7 +1059,7 @@ pub struct HoverParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct HoverRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1088,7 +1088,7 @@ pub struct ImplementationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ImplementationParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1105,7 +1105,7 @@ pub struct ImplementationParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ImplementationRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1119,14 +1119,14 @@ pub struct ImplementationRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InitializeError {
     #[doc = " Indicates whether the client execute the following retry logic: (1) show the message "]
     #[doc = " provided by the ResponseError to the user (2) user selects retry or cancel (3) if user "]
     #[doc = " selected retry the initialize method is sent again."]
     pub retry: bool,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InitializeParamsClientInfo {
     #[doc = " The name of the client as defined by the client."]
     pub name: String,
@@ -1134,7 +1134,7 @@ pub struct InitializeParamsClientInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InitializeParams {
     #[doc = " The capabilities provided by the client (editor or tool)"]
     pub capabilities: ClientCapabilities,
@@ -1181,7 +1181,7 @@ pub struct InitializeParams {
     #[serde(rename = "workspaceFolders")]
     pub workspace_folders: Option<Vec<WorkspaceFolder>>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InitializeResultServerInfo {
     #[doc = " The name of the server as defined by the server."]
     pub name: String,
@@ -1189,7 +1189,7 @@ pub struct InitializeResultServerInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InitializeResult {
     #[doc = " The capabilities the language server provides."]
     pub capabilities: ServerCapabilities,
@@ -1201,7 +1201,7 @@ pub struct InitializeResult {
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InitializedParams {}
 #[doc = " A special text edit to provide an insert and a replace operation."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct InsertReplaceEdit {
     #[doc = " The range if the insert is requested"]
     pub insert: Range,
@@ -1241,7 +1241,7 @@ pub struct LinkedEditingRangeOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct LinkedEditingRangeParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -1253,7 +1253,7 @@ pub struct LinkedEditingRangeParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct LinkedEditingRangeRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1267,7 +1267,7 @@ pub struct LinkedEditingRangeRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct LinkedEditingRanges {
     #[doc = " A list of ranges that can be renamed together. The ranges must have identical length and "]
     #[doc = " contain identical text content. The ranges cannot overlap."]
@@ -1278,12 +1278,12 @@ pub struct LinkedEditingRanges {
     #[serde(rename = "wordPattern")]
     pub word_pattern: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Location {
     pub range: Range,
     pub uri: DocumentUri,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct LocationLink {
     #[doc = " Span of the origin of this link."]
     #[doc = " "]
@@ -1307,7 +1307,7 @@ pub struct LocationLink {
     #[serde(rename = "targetUri")]
     pub target_uri: DocumentUri,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct LogMessageParams {
     #[doc = " The actual message"]
     pub message: String,
@@ -1315,7 +1315,7 @@ pub struct LogMessageParams {
     #[serde(rename = "type")]
     pub type_: MessageType,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct LogTraceParams {
     #[doc = " The message to be logged."]
     pub message: String,
@@ -1325,7 +1325,7 @@ pub struct LogTraceParams {
     pub verbose: Option<String>,
 }
 #[doc = " Client capabilities specific to the used markdown parser."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct MarkdownClientCapabilities {
     #[doc = " The name of the parser."]
     pub parser: String,
@@ -1352,7 +1352,7 @@ pub type MarkedString = serde_json::Value;
 #[doc = " "]
 #[doc = " *Please Note* that clients might sanitize the return markdown. A client could decide to remove "]
 #[doc = " HTML from the markdown to avoid script execution."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct MarkupContent {
     #[doc = " The type of the Markup"]
     pub kind: MarkupKind,
@@ -1371,13 +1371,20 @@ pub enum MarkupKind {
     #[serde(rename = "markdown")]
     Markdown,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+
+impl Default for MarkupKind {
+    fn default() -> Self {
+        Self::Plaintext
+    }
+}
+
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Message {
     pub jsonrpc: String,
     #[serde(flatten)]
     pub data: serde_json::Value,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct MessageActionItem {
     #[doc = " A short title like 'Retry', 'Open Log' etc."]
     pub title: String,
@@ -1390,6 +1397,13 @@ pub enum MessageType {
     Info = 3,
     Log = 4,
 }
+
+impl Default for MessageType {
+    fn default() -> Self {
+        Self::Info
+    }
+}
+
 #[doc = " Moniker definition to match LSIF 0.5 moniker definition."]
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct Moniker {
@@ -1429,7 +1443,7 @@ pub struct MonikerOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct MonikerParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1446,7 +1460,7 @@ pub struct MonikerParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct MonikerRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1456,7 +1470,7 @@ pub struct MonikerRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct NotificationMessage {
     pub jsonrpc: String,
     #[doc = " The method to be invoked."]
@@ -1465,7 +1479,7 @@ pub struct NotificationMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub params: Option<serde_json::Value>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct OptionalVersionedTextDocumentIdentifier {
     #[doc = " The text document's URI."]
     pub uri: DocumentUri,
@@ -1480,7 +1494,7 @@ pub struct OptionalVersionedTextDocumentIdentifier {
     pub version: Option<Integer>,
 }
 #[doc = " Represents a parameter of a callable-signature. A parameter can have a label and a doc-comment."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ParameterInformation {
     #[doc = " The human-readable doc-comment of this parameter. Will be shown in the UI but can be "]
     #[doc = " omitted."]
@@ -1505,7 +1519,7 @@ pub struct PartialResultParams {
     #[serde(rename = "partialResultToken")]
     pub partial_result_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Position {
     #[doc = " Character offset on a line in a document (zero-based). Assuming that the line is "]
     #[doc = " represented as a string, the `character` value represents the gap between the `character` "]
@@ -1516,7 +1530,7 @@ pub struct Position {
     #[doc = " Line position in a document (zero-based)."]
     pub line: Uinteger,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct PrepareRenameParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -1526,7 +1540,7 @@ pub struct PrepareRenameParams {
 }
 pub type PrepareSupportDefaultBehavior = f64;
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct PublishDiagnosticsClientCapabilitiesTagSupport {
     #[doc = " The tags supported by the client."]
     #[serde(rename = "valueSet")]
@@ -1558,7 +1572,7 @@ pub struct PublishDiagnosticsClientCapabilities {
     #[serde(rename = "versionSupport")]
     pub version_support: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct PublishDiagnosticsParams {
     #[doc = " An array of diagnostic information items."]
     pub diagnostics: Vec<Diagnostic>,
@@ -1568,7 +1582,7 @@ pub struct PublishDiagnosticsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub version: Option<Integer>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Range {
     #[doc = " The range's end position."]
     pub end: Position,
@@ -1582,7 +1596,7 @@ pub struct ReferenceClientCapabilities {
     #[serde(rename = "dynamicRegistration")]
     pub dynamic_registration: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ReferenceContext {
     #[doc = " Include the declaration of the current symbol."]
     #[serde(rename = "includeDeclaration")]
@@ -1594,7 +1608,7 @@ pub struct ReferenceOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ReferenceParams {
     pub context: ReferenceContext,
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
@@ -1612,7 +1626,7 @@ pub struct ReferenceParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ReferenceRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1623,7 +1637,7 @@ pub struct ReferenceRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " General parameters to register for a capability."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct Registration {
     #[doc = " The id used to register the request. The id can be used to deregister the request again."]
     pub id: String,
@@ -1634,12 +1648,12 @@ pub struct Registration {
     #[serde(rename = "registerOptions")]
     pub register_options: Option<serde_json::Value>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RegistrationParams {
     pub registrations: Vec<Registration>,
 }
 #[doc = " Client capabilities specific to regular expressions."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RegularExpressionsClientCapabilities {
     #[doc = " The engine's name."]
     pub engine: String,
@@ -1671,7 +1685,7 @@ pub struct RenameClientCapabilities {
     pub prepare_support_default_behavior: Option<PrepareSupportDefaultBehavior>,
 }
 #[doc = " Rename file operation"]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RenameFile {
     #[doc = " An optional annotation identifer describing the operation."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1701,7 +1715,7 @@ pub struct RenameFileOptions {
     pub overwrite: Option<bool>,
 }
 #[doc = " The parameters sent in notifications/requests for user-initiated renames of files."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RenameFilesParams {
     #[doc = " An array of all files/folders renamed in this operation. When a folder is renamed, only the "]
     #[doc = " folder will be included, and not its children."]
@@ -1717,7 +1731,7 @@ pub struct RenameOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RenameParams {
     #[doc = " The new name of the symbol. If the given name is not valid the request must return a "]
     #[doc = " [ResponseError](#ResponseError) with an appropriate message set."]
@@ -1733,7 +1747,7 @@ pub struct RenameParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RenameRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1748,7 +1762,7 @@ pub struct RenameRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct RequestMessage {
     #[doc = " The request id."]
     pub id: ReqId,
@@ -1769,7 +1783,7 @@ pub enum ResourceOperationKind {
     #[serde(rename = "delete")]
     Delete,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ResponseError {
     #[doc = " A number indicating the error type that occurred."]
     pub code: Integer,
@@ -1780,7 +1794,7 @@ pub struct ResponseError {
     #[doc = " A string providing a short description of the error."]
     pub message: String,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ResponseMessage {
     #[doc = " The error object in case a request fails."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1800,7 +1814,7 @@ pub struct SaveOptions {
     #[serde(rename = "includeText")]
     pub include_text: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SelectionRange {
     #[doc = " The parent selection range containing this range. Therefore `parent.range` must contain "]
     #[doc = " `this.range`."]
@@ -1824,7 +1838,7 @@ pub struct SelectionRangeOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SelectionRangeParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1841,7 +1855,7 @@ pub struct SelectionRangeParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SelectionRangeRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -1855,6 +1869,7 @@ pub struct SelectionRangeRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
+// TODO allow use defined types
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub enum SemanticTokenModifiers {
     #[serde(rename = "declaration")]
@@ -1878,6 +1893,7 @@ pub enum SemanticTokenModifiers {
     #[serde(rename = "defaultLibrary")]
     DefaultLibrary,
 }
+// TODO allow use defined types
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub enum SemanticTokenTypes {
     #[serde(rename = "namespace")]
@@ -1925,7 +1941,7 @@ pub enum SemanticTokenTypes {
     #[serde(rename = "operator")]
     Operator,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokens {
     #[doc = " The actual tokens."]
     pub data: Vec<Uinteger>,
@@ -1947,7 +1963,7 @@ pub struct SemanticTokensClientCapabilitiesRequests {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub range: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensClientCapabilities {
     #[doc = " Whether implementation supports dynamic registration. If this is set to `true` the client "]
     #[doc = " supports the new `(TextDocumentRegistrationOptions & StaticRegistrationOptions)` return "]
@@ -1979,7 +1995,7 @@ pub struct SemanticTokensClientCapabilities {
     #[serde(rename = "tokenTypes")]
     pub token_types: Vec<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensDelta {
     #[doc = " The semantic token edits to transform a previous result into a new result."]
     pub edits: Vec<SemanticTokensEdit>,
@@ -1987,7 +2003,7 @@ pub struct SemanticTokensDelta {
     #[serde(rename = "resultId")]
     pub result_id: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensDeltaParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -2006,11 +2022,11 @@ pub struct SemanticTokensDeltaParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensDeltaPartialResult {
     pub edits: Vec<SemanticTokensEdit>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensEdit {
     #[doc = " The elements to insert."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2021,7 +2037,7 @@ pub struct SemanticTokensEdit {
     #[doc = " The start offset of the edit."]
     pub start: Uinteger,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensLegend {
     #[doc = " The token modifiers a server uses."]
     #[serde(rename = "tokenModifiers")]
@@ -2030,7 +2046,7 @@ pub struct SemanticTokensLegend {
     #[serde(rename = "tokenTypes")]
     pub token_types: Vec<String>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensOptions {
     #[doc = " Server supports providing semantic tokens for a full document."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2044,13 +2060,13 @@ pub struct SemanticTokensOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensOptionsFull {
     #[doc = " The server supports deltas for full documents."]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delta: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -2065,11 +2081,11 @@ pub struct SemanticTokensParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensPartialResult {
     pub data: Vec<Uinteger>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensRangeParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -2086,7 +2102,7 @@ pub struct SemanticTokensRangeParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensRegistrationOptions {
     #[doc = " A document selector to identify the scope of the registration. If set to null the document "]
     #[doc = " selector provided on the client side will be used."]
@@ -2293,19 +2309,19 @@ pub struct ServerCapabilities {
 
 pub type TextDocumentSync = OneOf<TextDocumentSyncOptions, TextDocumentSyncKind>;
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SetTraceParams {
     #[doc = " The new value that should be assigned to the trace setting."]
     pub value: TraceValue,
 }
 #[doc = " Client capabilities for the show document request."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ShowDocumentClientCapabilities {
     #[doc = " The client has support for the show document request."]
     pub support: bool,
 }
 #[doc = " Params to show a document."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ShowDocumentParams {
     #[doc = " Indicates to show the resource in an external program. To show for example "]
     #[doc = " `https://code.visualstudio.com/` in the default WEB browser set `external` to `true`."]
@@ -2324,12 +2340,12 @@ pub struct ShowDocumentParams {
     pub uri: Uri,
 }
 #[doc = " The result of an show document request."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ShowDocumentResult {
     #[doc = " A boolean indicating if the show was successful."]
     pub success: bool,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ShowMessageParams {
     #[doc = " The actual message."]
     pub message: String,
@@ -2353,7 +2369,7 @@ pub struct ShowMessageRequestClientCapabilities {
     #[serde(rename = "messageActionItem")]
     pub message_action_item: Option<ShowMessageRequestClientCapabilitiesMessageActionItem>,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ShowMessageRequestParams {
     #[doc = " The message action items to present."]
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -21,6 +21,19 @@
           ".yaya"
         ]
       }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "extension.yaya.restartServer"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "extension.yaya.restartServer",
+        "title": "yaya: Restart Server"
+      }
     ]
   },
   "scripts": {

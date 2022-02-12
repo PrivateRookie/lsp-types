@@ -36,15 +36,21 @@ const launchServer = () => {
     },
   });
 
-  connect();
+  client.start();
 };
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	vscode.window.showInformationMessage("xxxx");
 	launchServer();
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.yaya.restartServer", () => {
+      deactivate();
+      launchServer();
+      vscode.window.showInformationMessage("yaya lang server restarted");
+    })
+  )
 }
 
 // this method is called when your extension is deactivated
