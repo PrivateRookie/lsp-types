@@ -1,2 +1,3 @@
 [workspace]
 members = ["crates/types", "crates/io"]
+exclude = ["examples/yaya-lsp"]

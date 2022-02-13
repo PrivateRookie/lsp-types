@@ -774,7 +774,7 @@ pub struct ExecuteCommandRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct ExitParams {}
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
@@ -1202,7 +1202,7 @@ pub struct InitializeResult {
     #[serde(rename = "serverInfo")]
     pub server_info: Option<InitializeResultServerInfo>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct InitializedParams {}
 #[doc = " A special text edit to provide an insert and a replace operation."]
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
@@ -1543,7 +1543,7 @@ pub struct PrepareRenameParams {
     pub text_document: TextDocumentIdentifier,
 }
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Serialize_repr, Deserialize_repr)]
 #[repr(i64)]
 pub enum PrepareSupportDefaultBehavior {
     Identifier = 1,
@@ -2093,7 +2093,7 @@ pub struct SemanticTokensOptionsFull {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub delta: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct SemanticTokensRefreshParams {}
 
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
@@ -2411,5 +2411,5 @@ pub struct ShowMessageRequestParams {
     pub type_: MessageType,
 }
 
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct ShutdownParams {}

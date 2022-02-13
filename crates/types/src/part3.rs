@@ -600,7 +600,7 @@ pub struct Unregistration {
     #[doc = " The method / capability to unregister for."]
     pub method: String,
 }
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct UnregistrationParams {
     pub unregisterations: Vec<Unregistration>,
 }
@@ -796,7 +796,7 @@ pub struct WorkspaceFolder {
     pub uri: DocumentUri,
 }
 
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct WorkspaceFolderParams {}
 #[doc = " The workspace folder change event."]
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
@@ -861,7 +861,7 @@ pub struct WorkspaceSymbolOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " The parameters of a Workspace Symbol Request."]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct WorkspaceSymbolParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]

@@ -10,6 +10,36 @@ pub use part2::*;
 pub use part3::*;
 pub use patch::*;
 
+macro_rules! serde_empty {
+    ($type:ty) => {
+        impl<'de> serde::Deserialize<'de> for $type {
+            fn deserialize<D>(_deserializer: D) -> Result<Self, D::Error>
+            where
+                D: serde::Deserializer<'de>,
+            {
+                Ok(Self::default())
+            }
+        }
+
+        impl serde::Serialize for $type {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: serde::Serializer,
+            {
+                serializer.serialize_none()
+            }
+        }
+    };
+}
+
+serde_empty!(ExitParams);
+serde_empty!(InitializedParams);
+serde_empty!(SemanticTokensRefreshParams);
+serde_empty!(ShutdownParams);
+serde_empty!(WorkspaceFolderParams);
+serde_empty!(Empty);
+
+
 pub trait FromReq: Sized {
     const METHOD: &'static str;
     type Ret;

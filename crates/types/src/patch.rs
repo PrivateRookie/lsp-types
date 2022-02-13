@@ -3,8 +3,8 @@ use crate::ResponseMessage;
 use super::Integer;
 use serde::{Deserialize, Serialize};
 
-#[doc = "empty response data"]
-#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[doc = "empty data"]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub struct Empty {}
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
