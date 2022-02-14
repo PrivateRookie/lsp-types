@@ -9,89 +9,96 @@ pub struct Empty {}
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum OneOf<T, U> {
-    One(T),
-    Other(U),
+pub enum OneOf<T, O> {
+    This(T),
+    Other(O),
 }
 
-impl<T, U> OneOf<T, U> {
-    pub fn map<X>(self, f: impl FnOnce(T) -> X) -> OneOf<X, U> {
+impl<T, O> OneOf<T, O> {
+    /// map `OneOf<T, O> -> OneOf<X, O>`
+    pub fn map_t<X>(self, f: impl FnOnce(T) -> X) -> OneOf<X, O> {
         match self {
-            OneOf::One(t) => OneOf::One(f(t)),
+            OneOf::This(t) => OneOf::This(f(t)),
             OneOf::Other(u) => OneOf::Other(u),
         }
     }
 
-    pub fn map_or<X>(self, f: impl FnOnce(U) -> X) -> OneOf<T, X> {
+    /// map `OneOf<T, O> -> OneOf<T, X>`
+    pub fn map_o<X>(self, f: impl FnOnce(O) -> X) -> OneOf<T, X> {
         match self {
-            OneOf::One(t) => OneOf::One(t),
+            OneOf::This(t) => OneOf::This(t),
             OneOf::Other(u) => OneOf::Other(f(u)),
         }
     }
 
-    pub fn unify(self, f: impl FnOnce(U) -> T) -> T {
+    /// make `OneOf<T, O>` -> T
+    pub fn unify(self, f: impl FnOnce(O) -> T) -> T {
         match self {
-            OneOf::One(t) => t,
+            OneOf::This(t) => t,
             OneOf::Other(u) => f(u),
         }
     }
 
-    pub fn transpose(self) -> OneOf<U, T> {
+    /// `OneOf<T, O> -> OneOf<O, T>`
+    pub fn transpose(self) -> OneOf<O, T> {
         match self {
-            OneOf::One(t) => OneOf::Other(t),
-            OneOf::Other(u) => OneOf::One(u),
+            OneOf::This(t) => OneOf::Other(t),
+            OneOf::Other(u) => OneOf::This(u),
         }
     }
 }
 
-impl<T, U> OneOf<T, OneOf<T, U>> {
-    pub fn flat_or(self) -> OneOf<T, U> {
+impl<T, O> OneOf<T, OneOf<T, O>> {
+    /// `OneOf<T, OneOf<T, O>>` -> OneOf<T, O>`
+    pub fn flat_o(self) -> OneOf<T, O> {
         match self {
-            OneOf::One(t) => OneOf::One(t),
-            OneOf::Other(u) => u.map(|x| x),
+            OneOf::This(t) => OneOf::This(t),
+            OneOf::Other(u) => u.map_t(|x| x),
         }
     }
 
-    pub fn flat_or_map<X>(self, f: impl FnOnce(T) -> X) -> OneOf<X, U> {
-        self.flat_or().map(f)
+    /// apply flat_o then apply map_t
+    pub fn flat_o_map_t<X>(self, f: impl FnOnce(T) -> X) -> OneOf<X, O> {
+        self.flat_o().map_t(f)
     }
 
-    pub fn flat_or_map_or<X>(self, f: impl FnOnce(U) -> X) -> OneOf<T, X> {
-        self.flat_or().map_or(f)
+    /// apply flat_o then apply map_o
+    pub fn flat_o_map_o<X>(self, f: impl FnOnce(O) -> X) -> OneOf<T, X> {
+        self.flat_o().map_o(f)
     }
 }
 
 impl<T: Default, U> Default for OneOf<T, U> {
     fn default() -> Self {
-        OneOf::One(T::default())
+        OneOf::This(T::default())
     }
 }
 
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 #[serde(untagged)]
-pub enum OneOf3<T, U, X> {
-    One(T),
-    Mid(U),
-    Other(X),
+pub enum OneOf3<T, A, O> {
+    This(T),
+    Among(A),
+    Other(O),
 }
 
-impl<T: Default, U> OneOf<T, U> {
-    pub fn one_default() -> Self {
-        Self::One(T::default())
+impl<T: Default, O> OneOf<T, O> {
+    pub fn default_this() -> Self {
+        Self::This(T::default())
     }
 
-    pub fn opt_one_default() -> Option<Self> {
-        Some(Self::one_default())
+    pub fn opt_default_this() -> Option<Self> {
+        Some(Self::default_this())
     }
 }
 
-impl<T, U: Default> OneOf<T, U> {
-    pub fn other_default() -> Self {
-        Self::Other(U::default())
+impl<T, O: Default> OneOf<T, O> {
+    pub fn default_other() -> Self {
+        Self::Other(O::default())
     }
 
-    pub fn opt_other_default() -> Option<Self> {
-        Some(Self::other_default())
+    pub fn opt_default_other() -> Option<Self> {
+        Some(Self::default_other())
     }
 }
 
@@ -109,7 +116,7 @@ pub struct ProgressParams {
 
 impl<T: Default, U, X> Default for OneOf3<T, U, X> {
     fn default() -> Self {
-        OneOf3::One(T::default())
+        OneOf3::This(T::default())
     }
 }
 

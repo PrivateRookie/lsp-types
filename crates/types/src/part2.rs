@@ -2225,7 +2225,7 @@ pub struct ServerCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "colorProvider")]
     pub color_provider:
-        Option<OneOf<bool, OneOf<DocumentColorOptions, DocumentColorRegistrationOptions>>>,
+        Option<OneOf3<bool, DocumentColorOptions, DocumentColorRegistrationOptions>>,
     #[doc = " The server provides completion support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "completionProvider")]
@@ -2234,7 +2234,7 @@ pub struct ServerCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "declarationProvider")]
     pub declaration_provider:
-        Option<OneOf<bool, OneOf<DeclarationOptions, DeclarationRegistrationOptions>>>,
+        Option<OneOf3<bool, DeclarationOptions, DeclarationRegistrationOptions>>,
     #[doc = " The server provides goto definition support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "definitionProvider")]
@@ -2274,7 +2274,7 @@ pub struct ServerCapabilities {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "foldingRangeProvider")]
     pub folding_range_provider:
-        Option<OneOf<bool, OneOf<FoldingRangeOptions, FoldingRangeRegistrationOptions>>>,
+        Option<OneOf3<bool, FoldingRangeOptions, FoldingRangeRegistrationOptions>>,
     #[doc = " The server provides hover support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "hoverProvider")]
@@ -2320,14 +2320,14 @@ pub struct ServerCapabilities {
     #[doc = " notification or for backwards compatibility the TextDocumentSyncKind number. If omitted it "]
     #[doc = " defaults to `TextDocumentSyncKind.None`."]
     // #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(default = "TextDocumentSync::opt_other_default")]
+    #[serde(default = "TextDocumentSync::opt_default_other")]
     #[serde(rename = "textDocumentSync")]
     pub text_document_sync: Option<TextDocumentSync>,
     #[doc = " The server provides goto type definition support."]
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "typeDefinitionProvider")]
     pub type_definition_provider:
-        Option<OneOf<bool, OneOf<TypeDefinitionOptions, TypeDefinitionRegistrationOptions>>>,
+        Option<OneOf3<bool, TypeDefinitionOptions, TypeDefinitionRegistrationOptions>>,
     #[doc = " Workspace specific server capabilities"]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub workspace: Option<ServerCapabilitiesWorkspace>,

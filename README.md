@@ -11,7 +11,7 @@ Native lsp types for rust
 
 here is a simple demo for creating a lang server and it's vscode extension.
 
-to run lsp server, cd `examples/yaya-lsp`, run `cargo run`, then server is starting and waiting for client connection
+to run lsp server, cd lsp-types, run `cargo run --example yaya-lsp`, then server is starting and waiting for client connection
 at `localhost:9999`.
 
 then open `examples/yaya` in another vscode editor, press F5 to start debug extension, open file with `.yaya` extension in **extension debug host**, type `$`, you will see completion from out dummy lsp server.

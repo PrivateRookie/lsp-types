@@ -52,7 +52,7 @@ pub trait FromReq: Sized {
     where
         F: FnMut(&mut C, ReqId, Self) -> I,
     {
-        Self::from_req(req).map(|(id, params)| f(context, id, params))
+        Self::from_req(req).map_t(|(id, params)| f(context, id, params))
     }
 }
 
@@ -69,7 +69,7 @@ macro_rules! impl_req {
                     let params: Self =
                         serde_json::from_value(params.unwrap_or_else(|| serde_json::Value::Null))
                             .unwrap();
-                    OneOf::One((id, params))
+                    OneOf::This((id, params))
                 } else {
                     OneOf::Other(req)
                 }
@@ -306,7 +306,7 @@ pub trait FromNotice: Sized + serde::Serialize {
     where
         F: FnMut(&mut C, Self) -> I,
     {
-        Self::from_notice(notice).map(|params| f(context, params))
+        Self::from_notice(notice).map_t(|params| f(context, params))
     }
 }
 
@@ -322,7 +322,7 @@ macro_rules! impl_notice {
                     let params =
                         serde_json::from_value(params.unwrap_or_else(|| serde_json::Value::Null))
                             .unwrap();
-                    OneOf::One(params)
+                    OneOf::This(params)
                 } else {
                     OneOf::Other(notice)
                 }

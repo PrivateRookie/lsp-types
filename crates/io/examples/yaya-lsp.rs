@@ -29,7 +29,7 @@ impl<S: Read + Write> Server<S> {
 
     fn receive(&mut self) -> IOResult<()> {
         match self.codec.receive()? {
-            OneOf::One(req) => self.on_req(req),
+            OneOf::This(req) => self.on_req(req),
             OneOf::Other(notice) => self.on_notify(notice),
         }
     }
@@ -53,7 +53,7 @@ impl<S: Read + Write> Server<S> {
             };
             server.resp(id.ok_resp(ret))
         })
-        .map_or(|req| {
+        .map_o(|req| {
             CompletionParams::on_req(req, self, |server, id, _| {
                 let ret = CompletionItem {
                     label: "demo".to_string(),
@@ -65,14 +65,14 @@ impl<S: Read + Write> Server<S> {
                 server.resp(id.ok_resp(vec![ret]))
             })
         })
-        .flat_or_map_or(|req| {
+        .flat_o_map_o(|req| {
             ShutdownParams::on_req(req, self, |server, id, _| {
                 server.terminated = true;
                 tracing::info!("shutting down...");
                 server.resp(id.ok_resp(Empty {}))
             })
         })
-        .flat_or()
+        .flat_o()
         .unify(|req| {
             tracing::warn!("unhandled request {:#?}", req);
             self.resp(req.id.ok_resp(serde_json::Value::Null))
@@ -85,7 +85,7 @@ impl<S: Read + Write> Server<S> {
     }
 
     pub fn resp(&mut self, resp: ResponseMessage) -> IOResult<()> {
-        self.codec.send(OneOf::One(resp))
+        self.codec.send(OneOf::This(resp))
     }
 
     pub fn notify(&mut self, msg: NotificationMessage) -> IOResult<()> {
