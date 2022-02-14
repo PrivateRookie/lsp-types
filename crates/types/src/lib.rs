@@ -10,6 +10,9 @@ pub use part2::*;
 pub use part3::*;
 pub use patch::*;
 
+/// current lsp version
+pub const VERSION: &str = "3.16";
+
 macro_rules! serde_empty {
     ($type:ty) => {
         impl<'de> serde::Deserialize<'de> for $type {
@@ -39,15 +42,20 @@ serde_empty!(ShutdownParams);
 serde_empty!(WorkspaceFolderParams);
 serde_empty!(Empty);
 
-
 pub trait FromReq: Sized {
     const METHOD: &'static str;
     type Ret;
 
+    /// perform message cast from raw request message
+    /// if method do not match, return `OneOf::Other(request)`
     fn from_req(req: RequestMessage) -> OneOf<(ReqId, Self), RequestMessage>;
+
+    /// helper function to test method match or not
     fn can_cast(req: &RequestMessage) -> bool {
         Self::METHOD == req.method
     }
+
+    /// pass handler function
     fn on_req<C, F, I>(req: RequestMessage, context: &mut C, mut f: F) -> OneOf<I, RequestMessage>
     where
         F: FnMut(&mut C, ReqId, Self) -> I,
@@ -73,6 +81,14 @@ macro_rules! impl_req {
                 } else {
                     OneOf::Other(req)
                 }
+            }
+        }
+
+        impl $type {
+            /// helper function for user do not need to remember
+            /// result type of a request
+            pub fn ret(result: $ret) -> $ret {
+                result
             }
         }
     };
@@ -284,8 +300,13 @@ impl_req!(MonikerParams, "textDocument/moniker", Vec<Moniker>);
 
 pub trait FromNotice: Sized + serde::Serialize {
     const METHOD: &'static str;
+
+    /// perform message cast
+    /// if method do not match, return `OneOf::Other(request)`
     fn from_notice(notice: NotificationMessage) -> OneOf<Self, NotificationMessage>;
 
+    /// helper method for specify notification down cast to generic Notification
+    /// message
     fn into_notice(self) -> NotificationMessage {
         NotificationMessage {
             jsonrpc: "2.0".to_string(),
@@ -294,10 +315,12 @@ pub trait FromNotice: Sized + serde::Serialize {
         }
     }
 
+    /// test method match or not
     fn can_cast(notice: &NotificationMessage) -> bool {
         Self::METHOD == notice.method
     }
 
+    /// pass handler function
     fn on_notice<C, F, I>(
         notice: NotificationMessage,
         context: &mut C,
