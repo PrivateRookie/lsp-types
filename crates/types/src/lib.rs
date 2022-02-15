@@ -54,14 +54,6 @@ pub trait FromReq: Sized {
     fn can_cast(req: &RequestMessage) -> bool {
         Self::METHOD == req.method
     }
-
-    /// pass handler function
-    fn on_req<C, F, I>(req: RequestMessage, context: &mut C, mut f: F) -> OneOf<I, RequestMessage>
-    where
-        F: FnMut(&mut C, ReqId, Self) -> I,
-    {
-        Self::from_req(req).map_t(|(id, params)| f(context, id, params))
-    }
 }
 
 #[macro_export]
@@ -318,18 +310,6 @@ pub trait FromNotice: Sized + serde::Serialize {
     /// test method match or not
     fn can_cast(notice: &NotificationMessage) -> bool {
         Self::METHOD == notice.method
-    }
-
-    /// pass handler function
-    fn on_notice<C, F, I>(
-        notice: NotificationMessage,
-        context: &mut C,
-        mut f: F,
-    ) -> OneOf<I, NotificationMessage>
-    where
-        F: FnMut(&mut C, Self) -> I,
-    {
-        Self::from_notice(notice).map_t(|params| f(context, params))
     }
 }
 

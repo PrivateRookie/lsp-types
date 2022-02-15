@@ -1,6 +1,6 @@
-use crate::ResponseMessage;
+use crate::{FromNotice, FromReq};
 
-use super::Integer;
+use super::{Integer, NotificationMessage, RequestMessage, ResponseMessage};
 use serde::{Deserialize, Serialize};
 
 #[doc = "empty data"]
@@ -129,5 +129,75 @@ impl ReqId {
             jsonrpc: "2.0".to_string(),
             result,
         }
+    }
+}
+
+impl RequestMessage {
+    pub fn with<C>(self, ctx: C) -> ReqWithContext<C> {
+        ReqWithContext((self, ctx))
+    }
+}
+
+pub struct ReqWithContext<C>((RequestMessage, C));
+
+impl<C> ReqWithContext<C> {
+    pub fn then<R, F, I>(self, mut f: F) -> OneOf<I, Self>
+    where
+        R: FromReq,
+        F: FnMut(&mut C, ReqId, R) -> I,
+    {
+        let (req, mut ctx) = self.0;
+        R::from_req(req)
+            .map_t(|(req_id, req)| f(&mut ctx, req_id, req))
+            .map_o(|req| Self((req, ctx)))
+    }
+
+    pub fn split(self) -> (RequestMessage, C) {
+        self.0
+    }
+}
+
+impl<I, C> OneOf<I, ReqWithContext<C>> {
+    pub fn or_else<F, R>(self, f: F) -> OneOf<I, ReqWithContext<C>>
+    where
+        R: FromReq,
+        F: FnMut(&mut C, ReqId, R) -> I,
+    {
+        self.map_o(|req| req.then(f)).flat_o()
+    }
+}
+
+impl NotificationMessage {
+    pub fn with<C>(self, ctx: C) -> NoticeWithContext<C> {
+        NoticeWithContext((self, ctx))
+    }
+}
+
+pub struct NoticeWithContext<C>((NotificationMessage, C));
+
+impl<C> NoticeWithContext<C> {
+    pub fn then<N, F, I>(self, mut f: F) -> OneOf<I, Self>
+    where
+        N: FromNotice,
+        F: FnMut(&mut C, N) -> I,
+    {
+        let (notice, mut ctx) = self.0;
+        N::from_notice(notice)
+            .map_t(|notice| f(&mut ctx, notice))
+            .map_o(|notice| Self((notice, ctx)))
+    }
+
+    pub fn split(self) -> (NotificationMessage, C) {
+        self.0
+    }
+}
+
+impl<I, C> OneOf<I, NoticeWithContext<C>> {
+    pub fn or_else<F, N>(self, f: F) -> OneOf<I, NoticeWithContext<C>>
+    where
+        N: FromNotice,
+        F: FnMut(&mut C, N) -> I,
+    {
+        self.map_o(|notice| notice.then(f)).flat_o()
     }
 }
