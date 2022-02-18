@@ -1,8 +1,8 @@
 use clap::Parser;
-use lsp_io::ServerCodec;
+use lsp_io::MessageCodec;
 use lsp_ty::{
     CancelParams, CompletionItem, CompletionItemKind, CompletionOptions, CompletionParams, Empty,
-    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf,
+    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf3,
     RequestMessage, ResponseMessage, ServerCapabilities, ShutdownParams,
 };
 use std::{
@@ -15,22 +15,26 @@ use tracing_subscriber::util::SubscriberInitExt;
 pub type IOResult<T> = std::io::Result<T>;
 
 pub struct Server<S: Read + Write> {
-    codec: ServerCodec<S>,
+    codec: MessageCodec<S>,
     terminated: bool,
 }
 
 impl<S: Read + Write> Server<S> {
     fn new(stream: S) -> Self {
         Self {
-            codec: ServerCodec::new(stream),
+            codec: MessageCodec::new(stream),
             terminated: false,
         }
     }
 
     fn receive(&mut self) -> IOResult<()> {
         match self.codec.receive()? {
-            OneOf::This(req) => self.on_req(req),
-            OneOf::Other(notice) => self.on_notify(notice),
+            OneOf3::This(req) => self.on_req(req),
+            OneOf3::Among(resp) => {
+                tracing::info!("{:#?}", resp);
+                Ok(())
+            },
+            OneOf3::Other(notice) => self.on_notify(notice),
         }
     }
 
@@ -98,11 +102,11 @@ impl<S: Read + Write> Server<S> {
     }
 
     pub fn resp(&mut self, resp: ResponseMessage) -> IOResult<()> {
-        self.codec.send(OneOf::This(resp))
+        self.codec.send_resp(resp)
     }
 
     pub fn notify(&mut self, msg: NotificationMessage) -> IOResult<()> {
-        self.codec.send(OneOf::Other(msg))
+        self.codec.send_notice(msg)
     }
 
     pub fn run(&mut self) -> IOResult<()> {

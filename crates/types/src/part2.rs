@@ -1475,6 +1475,7 @@ pub struct MonikerRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct NotificationMessage {
     pub jsonrpc: String,
     #[doc = " The method to be invoked."]
@@ -1811,6 +1812,7 @@ pub enum ResourceOperationKind {
     Delete,
 }
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct ResponseError {
     #[doc = " A number indicating the error type that occurred."]
     pub code: Integer,
@@ -1822,6 +1824,7 @@ pub struct ResponseError {
     pub message: String,
 }
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
 pub struct ResponseMessage {
     #[doc = " The error object in case a request fails."]
     #[serde(skip_serializing_if = "Option::is_none")]
