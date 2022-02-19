@@ -6,8 +6,10 @@ use lsp_ty::{
     RequestMessage, ResponseMessage, ServerCapabilities, ShutdownParams,
 };
 use std::{
+    cell::RefCell,
     io::{Read, Write},
     net::TcpListener,
+    rc::Rc,
 };
 use tracing::Level;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -33,14 +35,14 @@ impl<S: Read + Write> Server<S> {
             OneOf3::Among(resp) => {
                 tracing::info!("{:#?}", resp);
                 Ok(())
-            },
+            }
             OneOf3::Other(notice) => self.on_notify(notice),
         }
     }
 
     pub fn on_req(&mut self, req: RequestMessage) -> IOResult<()> {
         // pass context when handle request need;
-        req.with(self)
+        req.with(Rc::new(RefCell::new(self)))
             // pass handler function, you must specify param type
             // in anonymous handler function argument, other wise
             // you have to use turbo fish symbol
@@ -60,7 +62,7 @@ impl<S: Read + Write> Server<S> {
                         version: Some("0.0.1".to_string()),
                     }),
                 };
-                ctx.resp(id.ok_resp(ret))
+                ctx.borrow_mut().resp(id.ok_resp(ret))
             })
             // use or_else to route to other handler function if
             // method do not match
@@ -72,17 +74,18 @@ impl<S: Read + Write> Server<S> {
                     kind: Some(CompletionItemKind::Keyword),
                     ..Default::default()
                 };
-                ctx.resp(id.ok_resp(vec![item]))
+                ctx.borrow_mut().resp(id.ok_resp(vec![item]))
             })
             .or_else(|ctx, id, _: ShutdownParams| {
-                ctx.terminated = true;
+                ctx.borrow_mut().terminated = true;
                 tracing::info!("shutting down...");
-                ctx.resp(id.ok_resp(Empty {}))
+                ctx.borrow_mut().resp(id.ok_resp(Empty {}))
             })
             // finally handle default req
             .unify(|req| {
                 let (req, ctx) = req.split();
                 tracing::warn!("unhandled {:#?}", req);
+                let mut ctx = ctx.borrow_mut();
                 ctx.resp(req.id.ok_resp(serde_json::Value::Null))
             })
     }

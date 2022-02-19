@@ -141,14 +141,15 @@ impl RequestMessage {
 pub struct ReqWithContext<C>((RequestMessage, C));
 
 impl<C> ReqWithContext<C> {
-    pub fn then<R, F, I>(self, mut f: F) -> OneOf<I, Self>
+    pub fn then<R, F, I>(self, f: F) -> OneOf<I, Self>
     where
+        C: Clone,
         R: FromReq,
-        F: FnMut(&mut C, ReqId, R) -> I,
+        F: FnOnce(C, ReqId, R) -> I,
     {
-        let (req, mut ctx) = self.0;
+        let (req, ctx) = self.0;
         R::from_req(req)
-            .map_t(|(req_id, req)| f(&mut ctx, req_id, req))
+            .map_t(|(req_id, req)| f(ctx.clone(), req_id, req))
             .map_o(|req| Self((req, ctx)))
     }
 
@@ -160,8 +161,9 @@ impl<C> ReqWithContext<C> {
 impl<I, C> OneOf<I, ReqWithContext<C>> {
     pub fn or_else<F, R>(self, f: F) -> OneOf<I, ReqWithContext<C>>
     where
+        C: Clone,
         R: FromReq,
-        F: FnMut(&mut C, ReqId, R) -> I,
+        F: FnOnce(C, ReqId, R) -> I,
     {
         self.map_o(|req| req.then(f)).flat_o()
     }
