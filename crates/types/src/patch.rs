@@ -1,3 +1,5 @@
+use std::future::Future;
+
 use crate::{FromNotice, FromReq};
 
 use super::{Integer, NotificationMessage, RequestMessage, ResponseMessage};
@@ -36,6 +38,17 @@ impl<T, O> OneOf<T, O> {
         match self {
             OneOf::This(t) => t,
             OneOf::Other(u) => f(u),
+        }
+    }
+
+    /// make `OneOf<T, O>` -> T
+    pub async fn async_unify<F: Future<Output = T>>(self, f: impl FnOnce(O) -> F) -> T {
+        match self {
+            OneOf::This(t) => t,
+            OneOf::Other(u) => {
+                let t = f(u).await;
+                t
+            }
         }
     }
 
@@ -153,6 +166,23 @@ impl<C> ReqWithContext<C> {
             .map_o(|req| Self((req, ctx)))
     }
 
+    pub async fn async_then<R, F, I, IF>(self, f: F) -> OneOf<I, Self>
+    where
+        C: Clone,
+        R: FromReq,
+        IF: Future<Output = I>,
+        F: FnOnce(C, ReqId, R) -> IF,
+    {
+        let (req, ctx) = self.0;
+        match R::from_req(req) {
+            OneOf::This((req_id, req)) => {
+                let t = f(ctx.clone(), req_id, req).await;
+                OneOf::This(t)
+            }
+            OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
+        }
+    }
+
     pub fn split(self) -> (RequestMessage, C) {
         self.0
     }
@@ -167,6 +197,23 @@ impl<I, C> OneOf<I, ReqWithContext<C>> {
     {
         self.map_o(|req| req.then(f)).flat_o()
     }
+
+    pub async fn async_or_else<F, R, IF>(self, f: F) -> OneOf<I, ReqWithContext<C>>
+    where
+        C: Clone,
+        R: FromReq,
+        IF: Future<Output = I>,
+        F: FnOnce(C, ReqId, R) -> IF,
+    {
+        let ret = match self {
+            OneOf::This(t) => OneOf::This(t),
+            OneOf::Other(o) => {
+                let o = o.async_then(f).await;
+                OneOf::Other(o)
+            }
+        };
+        ret.flat_o()
+    }
 }
 
 impl NotificationMessage {
@@ -178,15 +225,33 @@ impl NotificationMessage {
 pub struct NoticeWithContext<C>((NotificationMessage, C));
 
 impl<C> NoticeWithContext<C> {
-    pub fn then<N, F, I>(self, mut f: F) -> OneOf<I, Self>
+    pub fn then<N, F, I>(self, f: F) -> OneOf<I, Self>
     where
+        C: Clone,
         N: FromNotice,
-        F: FnMut(&mut C, N) -> I,
+        F: FnOnce(C, N) -> I,
     {
-        let (notice, mut ctx) = self.0;
+        let (notice, ctx) = self.0;
         N::from_notice(notice)
-            .map_t(|notice| f(&mut ctx, notice))
+            .map_t(|notice| f(ctx.clone(), notice))
             .map_o(|notice| Self((notice, ctx)))
+    }
+
+    pub async fn async_then<N, F, I, IF>(self, f: F) -> OneOf<I, Self>
+    where
+        C: Clone,
+        N: FromNotice,
+        IF: Future<Output = I>,
+        F: FnOnce(C, N) -> IF,
+    {
+        let (req, ctx) = self.0;
+        match N::from_notice(req) {
+            OneOf::This(req) => {
+                let t = f(ctx.clone(), req).await;
+                OneOf::This(t)
+            }
+            OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
+        }
     }
 
     pub fn split(self) -> (NotificationMessage, C) {
@@ -197,9 +262,27 @@ impl<C> NoticeWithContext<C> {
 impl<I, C> OneOf<I, NoticeWithContext<C>> {
     pub fn or_else<F, N>(self, f: F) -> OneOf<I, NoticeWithContext<C>>
     where
+        C: Clone,
         N: FromNotice,
-        F: FnMut(&mut C, N) -> I,
+        F: FnOnce(C, N) -> I,
     {
         self.map_o(|notice| notice.then(f)).flat_o()
+    }
+
+    pub async fn async_or_else<F, N, IF>(self, f: F) -> OneOf<I, NoticeWithContext<C>>
+    where
+        C: Clone,
+        N: FromNotice,
+        IF: Future<Output = I>,
+        F: FnOnce(C, N) -> IF,
+    {
+        let ret = match self {
+            OneOf::This(t) => OneOf::This(t),
+            OneOf::Other(o) => {
+                let o = o.async_then(f).await;
+                OneOf::Other(o)
+            }
+        };
+        ret.flat_o()
     }
 }

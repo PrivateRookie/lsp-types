@@ -92,7 +92,7 @@ impl<S: Read + Write> Server<S> {
 
     pub fn on_notify(&mut self, notice: NotificationMessage) -> IOResult<()> {
         notice
-            .with(self)
+            .with(Rc::new(RefCell::new(self)))
             .then(|_, _: CancelParams| {
                 tracing::info!("client cancel request");
                 Ok(())
