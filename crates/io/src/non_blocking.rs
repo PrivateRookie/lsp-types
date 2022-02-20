@@ -3,6 +3,7 @@ use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
 use crate::utils::CodecState;
 
+/// async protocol message reader/writer
 pub struct AMessageCodec<S: AsyncRead + AsyncWrite> {
     stream: S,
     state: CodecState,

@@ -5,7 +5,7 @@ type IOResult<T> = std::io::Result<T>;
 
 use crate::utils::CodecState;
 
-/// protocol message encode/decode
+/// protocol message reader/writer
 pub struct MessageCodec<S: Read + Write> {
     stream: S,
     state: CodecState,

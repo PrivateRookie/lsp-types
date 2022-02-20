@@ -1,17 +1,25 @@
 [package]
 name = "lsp-io"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+description = "simple wrapper for LSP message read/write"
+license-file = "../../LICENSE"
+repository = "https://github.com/PrivateRookie/lsp-types"
+homepage = "https://privaterookie.github.io/lsp-types/"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
 default = ["blocking"]
 blocking = []
-async = ["tokio"]
+async = ["tokio", "lsp-ty/async"]
+
+[[example]]
+name = "yaya-async-lsp"
+required-features = ["async"]
 
 [dependencies]
-lsp-ty = { path = "../types" }
+lsp-ty = { path = "../types", version = "0.2.0" }
 bytes = "1"
 serde_json = "1"
 serde = "1"

@@ -1,9 +1,18 @@
 [package]
 name = "lsp-ty"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
+description = "type definitons for LSP"
+license-file = "../../LICENSE"
+repository = "https://github.com/PrivateRookie/lsp-types"
+homepage = "https://privaterookie.github.io/lsp-types/"
+
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = []
+async = []
 
 [dependencies]
 serde = { version = "1", features = ["derive"] }

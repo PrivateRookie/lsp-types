@@ -1,5 +1,3 @@
-use std::future::Future;
-
 use crate::{FromNotice, FromReq};
 
 use super::{Integer, NotificationMessage, RequestMessage, ResponseMessage};
@@ -38,17 +36,6 @@ impl<T, O> OneOf<T, O> {
         match self {
             OneOf::This(t) => t,
             OneOf::Other(u) => f(u),
-        }
-    }
-
-    /// make `OneOf<T, O>` -> T
-    pub async fn async_unify<F: Future<Output = T>>(self, f: impl FnOnce(O) -> F) -> T {
-        match self {
-            OneOf::This(t) => t,
-            OneOf::Other(u) => {
-                let t = f(u).await;
-                t
-            }
         }
     }
 
@@ -134,6 +121,7 @@ impl<T: Default, U, X> Default for OneOf3<T, U, X> {
 }
 
 impl ReqId {
+    /// helper function to construct a ok response with request id
     pub fn ok_resp<T: serde::Serialize, R: Into<Option<T>>>(self, result: R) -> ResponseMessage {
         let result = result.into().map(|v| serde_json::to_value(v).unwrap());
         ResponseMessage {
@@ -154,6 +142,7 @@ impl RequestMessage {
 pub struct ReqWithContext<C>((RequestMessage, C));
 
 impl<C> ReqWithContext<C> {
+    /// passing handler for current request
     pub fn then<R, F, I>(self, f: F) -> OneOf<I, Self>
     where
         C: Clone,
@@ -166,29 +155,13 @@ impl<C> ReqWithContext<C> {
             .map_o(|req| Self((req, ctx)))
     }
 
-    pub async fn async_then<R, F, I, IF>(self, f: F) -> OneOf<I, Self>
-    where
-        C: Clone,
-        R: FromReq,
-        IF: Future<Output = I>,
-        F: FnOnce(C, ReqId, R) -> IF,
-    {
-        let (req, ctx) = self.0;
-        match R::from_req(req) {
-            OneOf::This((req_id, req)) => {
-                let t = f(ctx.clone(), req_id, req).await;
-                OneOf::This(t)
-            }
-            OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
-        }
-    }
-
     pub fn split(self) -> (RequestMessage, C) {
         self.0
     }
 }
 
 impl<I, C> OneOf<I, ReqWithContext<C>> {
+    /// if previous handler does not match method field, pass alternative handler
     pub fn or_else<F, R>(self, f: F) -> OneOf<I, ReqWithContext<C>>
     where
         C: Clone,
@@ -197,34 +170,22 @@ impl<I, C> OneOf<I, ReqWithContext<C>> {
     {
         self.map_o(|req| req.then(f)).flat_o()
     }
-
-    pub async fn async_or_else<F, R, IF>(self, f: F) -> OneOf<I, ReqWithContext<C>>
-    where
-        C: Clone,
-        R: FromReq,
-        IF: Future<Output = I>,
-        F: FnOnce(C, ReqId, R) -> IF,
-    {
-        let ret = match self {
-            OneOf::This(t) => OneOf::This(t),
-            OneOf::Other(o) => {
-                let o = o.async_then(f).await;
-                OneOf::Other(o)
-            }
-        };
-        ret.flat_o()
-    }
 }
 
 impl NotificationMessage {
+    /// construct ctx with custom data, used for chaining handler functions
     pub fn with<C>(self, ctx: C) -> NoticeWithContext<C> {
         NoticeWithContext((self, ctx))
     }
 }
 
+/// wrap notification message with custom context
+///
+/// should be constructed by [NotificationMessage::with]
 pub struct NoticeWithContext<C>((NotificationMessage, C));
 
 impl<C> NoticeWithContext<C> {
+     /// passing handler for current request
     pub fn then<N, F, I>(self, f: F) -> OneOf<I, Self>
     where
         C: Clone,
@@ -237,29 +198,13 @@ impl<C> NoticeWithContext<C> {
             .map_o(|notice| Self((notice, ctx)))
     }
 
-    pub async fn async_then<N, F, I, IF>(self, f: F) -> OneOf<I, Self>
-    where
-        C: Clone,
-        N: FromNotice,
-        IF: Future<Output = I>,
-        F: FnOnce(C, N) -> IF,
-    {
-        let (req, ctx) = self.0;
-        match N::from_notice(req) {
-            OneOf::This(req) => {
-                let t = f(ctx.clone(), req).await;
-                OneOf::This(t)
-            }
-            OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
-        }
-    }
-
     pub fn split(self) -> (NotificationMessage, C) {
         self.0
     }
 }
 
 impl<I, C> OneOf<I, NoticeWithContext<C>> {
+    /// if previous handler does not match method field, pass alternative handler
     pub fn or_else<F, N>(self, f: F) -> OneOf<I, NoticeWithContext<C>>
     where
         C: Clone,
@@ -268,21 +213,105 @@ impl<I, C> OneOf<I, NoticeWithContext<C>> {
     {
         self.map_o(|notice| notice.then(f)).flat_o()
     }
+}
 
-    pub async fn async_or_else<F, N, IF>(self, f: F) -> OneOf<I, NoticeWithContext<C>>
-    where
-        C: Clone,
-        N: FromNotice,
-        IF: Future<Output = I>,
-        F: FnOnce(C, N) -> IF,
-    {
-        let ret = match self {
-            OneOf::This(t) => OneOf::This(t),
-            OneOf::Other(o) => {
-                let o = o.async_then(f).await;
-                OneOf::Other(o)
+#[cfg(feature = "async")]
+mod async_impl {
+    use std::future::Future;
+
+    use super::{FromNotice, FromReq, NoticeWithContext, ReqWithContext};
+    use crate::{OneOf, ReqId};
+
+    impl<T, O> OneOf<T, O> {
+        /// async version of `unify`, allowing pass async handler function
+        pub async fn async_unify<F: Future<Output = T>>(self, f: impl FnOnce(O) -> F) -> T {
+            match self {
+                OneOf::This(t) => t,
+                OneOf::Other(u) => {
+                    let t = f(u).await;
+                    t
+                }
             }
-        };
-        ret.flat_o()
+        }
+    }
+
+    impl<C> ReqWithContext<C> {
+        /// async version of `then`, passing async handler
+        pub async fn async_then<R, F, I, IF>(self, f: F) -> OneOf<I, Self>
+        where
+            C: Clone,
+            R: FromReq,
+            IF: Future<Output = I>,
+            F: FnOnce(C, ReqId, R) -> IF,
+        {
+            let (req, ctx) = self.0;
+            match R::from_req(req) {
+                OneOf::This((req_id, req)) => {
+                    let t = f(ctx.clone(), req_id, req).await;
+                    OneOf::This(t)
+                }
+                OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
+            }
+        }
+    }
+
+    impl<I, C> OneOf<I, ReqWithContext<C>> {
+        /// async version of `or_else`, passing async handler
+        pub async fn async_or_else<F, R, IF>(self, f: F) -> OneOf<I, ReqWithContext<C>>
+        where
+            C: Clone,
+            R: FromReq,
+            IF: Future<Output = I>,
+            F: FnOnce(C, ReqId, R) -> IF,
+        {
+            let ret = match self {
+                OneOf::This(t) => OneOf::This(t),
+                OneOf::Other(o) => {
+                    let o = o.async_then(f).await;
+                    OneOf::Other(o)
+                }
+            };
+            ret.flat_o()
+        }
+    }
+
+    impl<C> NoticeWithContext<C> {
+        /// async version of `then`, passing async handler
+        pub async fn async_then<N, F, R, IF>(self, f: F) -> OneOf<R, Self>
+        where
+            C: Clone,
+            N: FromNotice,
+            IF: Future<Output = R>,
+            F: FnOnce(C, N) -> IF,
+        {
+            let (req, ctx) = self.0;
+            match N::from_notice(req) {
+                OneOf::This(req) => {
+                    let t = f(ctx.clone(), req).await;
+                    OneOf::This(t)
+                }
+                OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
+            }
+        }
+    }
+
+    impl<I, C> OneOf<I, NoticeWithContext<C>> {
+        /// async version of `or_else`, passing async handler
+        pub async fn async_or_else<F, N, IF>(self, f: F) -> OneOf<I, NoticeWithContext<C>>
+        where
+            C: Clone,
+            N: FromNotice,
+            IF: Future<Output = I>,
+            F: FnOnce(C, N) -> IF,
+        {
+            let ret = match self {
+                OneOf::This(t) => OneOf::This(t),
+                OneOf::Other(o) => {
+                    let o = o.async_then(f).await;
+                    OneOf::Other(o)
+                }
+            };
+            ret.flat_o()
+        }
     }
 }

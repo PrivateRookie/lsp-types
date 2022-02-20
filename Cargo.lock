@@ -145,7 +145,7 @@ dependencies = [
 
 [[package]]
 name = "lsp-io"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bytes",
  "clap",
@@ -159,7 +159,7 @@ dependencies = [
 
 [[package]]
 name = "lsp-ty"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "schemafy_core",
  "serde",
