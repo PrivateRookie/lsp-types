@@ -126,7 +126,7 @@ pub struct CallHierarchyOutgoingCallsParams {
     #[serde(rename = "workDoneToken")]
     pub work_done_token: Option<ProgressToken>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct CallHierarchyPrepareParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -452,7 +452,7 @@ pub struct CodeActionOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " Params for the CodeActionRequest"]
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct CodeActionParams {
     #[doc = " Context carrying additional information."]
     pub context: CodeActionContext,
@@ -532,7 +532,7 @@ pub struct CodeLensOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct CodeLensParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -609,7 +609,7 @@ pub struct ColorPresentation {
     #[serde(rename = "textEdit")]
     pub text_edit: Option<TextEdit>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct ColorPresentationParams {
     #[doc = " The color information to request presentations for."]
     pub color: Color,
@@ -929,7 +929,7 @@ pub struct CompletionOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct CompletionParams {
     #[doc = " The completion context. This is only available if the client specifies to send this using "]
     #[doc = " the client capability `completion.contextSupport === true`"]

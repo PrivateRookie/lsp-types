@@ -112,7 +112,6 @@ impl_req!(
     "workspace/symbol",
     Vec<SymbolInformation>
 );
-// TODO workspace symbol
 impl_req!(ExecuteCommandParams, "workspace/executeCommand");
 impl_req!(
     ApplyWorkspaceEditParams,

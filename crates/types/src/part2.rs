@@ -17,7 +17,7 @@ pub struct ConfigurationParams {
     pub items: Vec<ConfigurationItem>,
 }
 #[doc = " Create file operation"]
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct CreateFile {
     #[doc = " An optional annotation identifer describing the operation."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -67,7 +67,7 @@ pub struct DeclarationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DeclarationParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -115,7 +115,7 @@ pub struct DefinitionOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DefinitionParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -143,7 +143,7 @@ pub struct DefinitionRegistrationOptions {
     pub work_done_progress: Option<bool>,
 }
 #[doc = " Delete file operation"]
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DeleteFile {
     #[doc = " An optional annotation identifer describing the operation."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -212,7 +212,7 @@ pub struct Diagnostic {
 #[doc = " Represents a related message and source code location for a diagnostic. This should be used to "]
 #[doc = " point to code locations that cause or are related to a diagnostics, e.g when duplicating a "]
 #[doc = " symbol in a scope."]
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DiagnosticRelatedInformation {
     #[doc = " The location of this related diagnostic information."]
     pub location: Location,
@@ -246,7 +246,7 @@ pub struct DidChangeConfigurationParams {
     #[doc = " The actual changed settings"]
     pub settings: serde_json::Value,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DidChangeTextDocumentParams {
     #[doc = " The actual content changes. The content changes describe single state changes to the "]
     #[doc = " document. So if there are two content changes c1 (at array index 0) and c2 (at array index "]
@@ -290,19 +290,19 @@ pub struct DidChangeWorkspaceFoldersParams {
     #[doc = " The actual workspace folder change event."]
     pub event: WorkspaceFoldersChangeEvent,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DidCloseTextDocumentParams {
     #[doc = " The document that was closed."]
     #[serde(rename = "textDocument")]
     pub text_document: TextDocumentIdentifier,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DidOpenTextDocumentParams {
     #[doc = " The document that was opened."]
     #[serde(rename = "textDocument")]
     pub text_document: TextDocumentItem,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DidSaveTextDocumentParams {
     #[doc = " Optional the content when saved. Depends on the includeText value when the save "]
     #[doc = " notification was requested."]
@@ -325,7 +325,7 @@ pub struct DocumentColorOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentColorParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -390,7 +390,7 @@ pub struct DocumentFormattingOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentFormattingParams {
     #[doc = " The format options."]
     pub options: FormattingOptions,
@@ -443,7 +443,7 @@ pub struct DocumentHighlightOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentHighlightParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -512,7 +512,7 @@ pub struct DocumentLinkOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentLinkParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -558,7 +558,7 @@ pub struct DocumentOnTypeFormattingOptions {
     #[serde(rename = "moreTriggerCharacter")]
     pub more_trigger_character: Option<Vec<String>>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentOnTypeFormattingParams {
     #[doc = " The character that has been typed."]
     pub ch: String,
@@ -597,7 +597,7 @@ pub struct DocumentRangeFormattingOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentRangeFormattingParams {
     #[doc = " The format options"]
     pub options: FormattingOptions,
@@ -707,7 +707,7 @@ pub struct DocumentSymbolOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct DocumentSymbolParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -736,7 +736,7 @@ pub struct DocumentSymbolRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-pub type DocumentUri = String;
+pub type DocumentUri = url::Url;
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct ExecuteCommandClientCapabilities {
     #[doc = " Execute command supports dynamic registration."]
@@ -809,7 +809,7 @@ pub struct FileDelete {
     pub uri: String,
 }
 #[doc = " An event describing a file change."]
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct FileEvent {
     #[doc = " The change type."]
     #[serde(rename = "type")]
@@ -969,7 +969,7 @@ pub struct FoldingRangeOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct FoldingRangeParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1051,7 +1051,7 @@ pub struct HoverOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct HoverParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -1092,7 +1092,7 @@ pub struct ImplementationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct ImplementationParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1245,7 +1245,7 @@ pub struct LinkedEditingRangeOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct LinkedEditingRangeParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -1282,12 +1282,12 @@ pub struct LinkedEditingRanges {
     #[serde(rename = "wordPattern")]
     pub word_pattern: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct Location {
     pub range: Range,
     pub uri: DocumentUri,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct LocationLink {
     #[doc = " Span of the origin of this link."]
     #[doc = " "]
@@ -1447,7 +1447,7 @@ pub struct MonikerOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct MonikerParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1484,7 +1484,7 @@ pub struct NotificationMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub params: Option<serde_json::Value>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct OptionalVersionedTextDocumentIdentifier {
     #[doc = " The text document's URI."]
     pub uri: DocumentUri,
@@ -1535,7 +1535,7 @@ pub struct Position {
     #[doc = " Line position in a document (zero-based)."]
     pub line: Uinteger,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct PrepareRenameParams {
     #[doc = " The position inside the text document."]
     pub position: Position,
@@ -1600,7 +1600,7 @@ pub struct PublishDiagnosticsClientCapabilities {
     #[serde(rename = "versionSupport")]
     pub version_support: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct PublishDiagnosticsParams {
     #[doc = " An array of diagnostic information items."]
     pub diagnostics: Vec<Diagnostic>,
@@ -1636,7 +1636,7 @@ pub struct ReferenceOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct ReferenceParams {
     pub context: ReferenceContext,
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
@@ -1713,7 +1713,7 @@ pub struct RenameClientCapabilities {
     pub prepare_support_default_behavior: Option<PrepareSupportDefaultBehavior>,
 }
 #[doc = " Rename file operation"]
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct RenameFile {
     #[doc = " An optional annotation identifer describing the operation."]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1759,7 +1759,7 @@ pub struct RenameOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct RenameParams {
     #[doc = " The new name of the symbol. If the given name is not valid the request must return a "]
     #[doc = " [ResponseError](#ResponseError) with an appropriate message set."]
@@ -1868,7 +1868,7 @@ pub struct SelectionRangeOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SelectionRangeParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -1899,78 +1899,156 @@ pub struct SelectionRangeRegistrationOptions {
     #[serde(rename = "workDoneProgress")]
     pub work_done_progress: Option<bool>,
 }
-// TODO allow use defined types
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-pub enum SemanticTokenModifiers {
-    #[serde(rename = "declaration")]
-    Declaration,
-    #[serde(rename = "definition")]
-    Definition,
-    #[serde(rename = "readonly")]
-    Readonly,
-    #[serde(rename = "static")]
-    Static,
-    #[serde(rename = "deprecated")]
-    Deprecated,
-    #[serde(rename = "abstract")]
-    Abstract,
-    #[serde(rename = "async")]
-    Async,
-    #[serde(rename = "modification")]
-    Modification,
-    #[serde(rename = "documentation")]
-    Documentation,
-    #[serde(rename = "defaultLibrary")]
-    DefaultLibrary,
+pub struct SemanticTokenModifiers(String);
+
+impl From<&str> for SemanticTokenModifiers {
+    fn from(s: &str) -> Self {
+        Self(s.to_string())
+    }
 }
-// TODO allow use defined types
+
+impl Into<String> for SemanticTokenModifiers {
+    fn into(self) -> String {
+        self.0
+    }
+}
+
+impl SemanticTokenModifiers {
+    pub fn new(s: String) -> Self {
+        Self(s)
+    }
+
+    pub fn declaration() -> Self {
+        "declaration".into()
+    }
+
+    pub fn definition() -> Self {
+        "definition".into()
+    }
+
+    pub fn readonly() -> Self {
+        "readonly".into()
+    }
+
+    pub fn static_() -> Self {
+        "static".into()
+    }
+
+    pub fn deprecated() -> Self {
+        "deprecated".into()
+    }
+
+    pub fn abstract_() -> Self {
+        "abstract".into()
+    }
+
+    pub fn async_() -> Self {
+        "async".into()
+    }
+
+    pub fn modification() -> Self {
+        "modification".into()
+    }
+
+    pub fn documentation() -> Self {
+        "documentation".into()
+    }
+
+    pub fn default_library() -> Self {
+        "defaultLibrary".into()
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
-pub enum SemanticTokenTypes {
-    #[serde(rename = "namespace")]
-    Namespace,
-    #[serde(rename = "type")]
-    Type,
-    #[serde(rename = "class")]
-    Class,
-    #[serde(rename = "enum")]
-    Enum,
-    #[serde(rename = "interface")]
-    Interface,
-    #[serde(rename = "struct")]
-    Struct,
-    #[serde(rename = "typeParameter")]
-    TypeParameter,
-    #[serde(rename = "parameter")]
-    Parameter,
-    #[serde(rename = "variable")]
-    Variable,
-    #[serde(rename = "property")]
-    Property,
-    #[serde(rename = "enumMember")]
-    EnumMember,
-    #[serde(rename = "event")]
-    Event,
-    #[serde(rename = "function")]
-    Function,
-    #[serde(rename = "method")]
-    Method,
-    #[serde(rename = "macro")]
-    Macro,
-    #[serde(rename = "keyword")]
-    Keyword,
-    #[serde(rename = "modifier")]
-    Modifier,
-    #[serde(rename = "comment")]
-    Comment,
-    #[serde(rename = "string")]
-    String,
-    #[serde(rename = "number")]
-    Number,
-    #[serde(rename = "regexp")]
-    Regexp,
-    #[serde(rename = "operator")]
-    Operator,
+pub struct SemanticTokenTypes(String);
+
+impl From<&str> for SemanticTokenTypes {
+    fn from(s: &str) -> Self {
+        Self(s.to_string())
+    }
 }
+
+impl Into<String> for SemanticTokenTypes {
+    fn into(self) -> String {
+        self.0
+    }
+}
+
+impl SemanticTokenTypes {
+    pub fn new(s: String) -> Self {
+        Self(s)
+    }
+
+    pub fn namespace() -> Self {
+        "namespace".into()
+    }
+    pub fn type_() -> Self {
+        "type".into()
+    }
+    pub fn class() -> Self {
+        "class".into()
+    }
+    pub fn enum_() -> Self {
+        "enum".into()
+    }
+    pub fn interface() -> Self {
+        "interface".into()
+    }
+    pub fn struct_() -> Self {
+        "struct".into()
+    }
+    pub fn type_parameter() -> Self {
+        "typeParameter".into()
+    }
+    pub fn parameter() -> Self {
+        "parameter".into()
+    }
+    pub fn variable() -> Self {
+        "variable".into()
+    }
+    pub fn property() -> Self {
+        "property".into()
+    }
+    pub fn enum_member() -> Self {
+        "enumMember".into()
+    }
+    pub fn event() -> Self {
+        "event".into()
+    }
+    pub fn function() -> Self {
+        "function".into()
+    }
+    pub fn method() -> Self {
+        "method".into()
+    }
+    pub fn macro_() -> Self {
+        "macro".into()
+    }
+    pub fn keyword() -> Self {
+        "keyword".into()
+    }
+    pub fn modifier() -> Self {
+        "modifier".into()
+    }
+    pub fn comment() -> Self {
+        "comment".into()
+    }
+    pub fn string() -> Self {
+        "string".into()
+    }
+    pub fn number() -> Self {
+        "number".into()
+    }
+    pub fn regexp() -> Self {
+        "regexp".into()
+    }
+    pub fn operator() -> Self {
+        "operator".into()
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokens {
     #[doc = " The actual tokens."]
@@ -2020,10 +2098,10 @@ pub struct SemanticTokensClientCapabilities {
     pub requests: SemanticTokensClientCapabilitiesRequests,
     #[doc = " The token modifiers that the client supports."]
     #[serde(rename = "tokenModifiers")]
-    pub token_modifiers: Vec<String>,
+    pub token_modifiers: Vec<SemanticTokenModifiers>,
     #[doc = " The token types that the client supports."]
     #[serde(rename = "tokenTypes")]
-    pub token_types: Vec<String>,
+    pub token_types: Vec<SemanticTokenTypes>,
 }
 #[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
 pub struct SemanticTokensDelta {
@@ -2033,7 +2111,7 @@ pub struct SemanticTokensDelta {
     #[serde(rename = "resultId")]
     pub result_id: Option<String>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SemanticTokensDeltaParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -2099,7 +2177,7 @@ pub struct SemanticTokensOptionsFull {
 #[derive(Clone, PartialEq, Debug, Default)]
 pub struct SemanticTokensRefreshParams {}
 
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SemanticTokensParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]
@@ -2118,7 +2196,7 @@ pub struct SemanticTokensParams {
 pub struct SemanticTokensPartialResult {
     pub data: Vec<Uinteger>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct SemanticTokensRangeParams {
     #[doc = " An optional token that a server can use to report partial results (e.g. streaming) to the "]
     #[doc = " client."]

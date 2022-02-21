@@ -185,7 +185,7 @@ impl NotificationMessage {
 pub struct NoticeWithContext<C>((NotificationMessage, C));
 
 impl<C> NoticeWithContext<C> {
-     /// passing handler for current request
+    /// passing handler for current request
     pub fn then<N, F, I>(self, f: F) -> OneOf<I, Self>
     where
         C: Clone,

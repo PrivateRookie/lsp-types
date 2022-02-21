@@ -385,12 +385,12 @@ pub struct TextDocumentEdit {
     #[serde(rename = "textDocument")]
     pub text_document: OptionalVersionedTextDocumentIdentifier,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct TextDocumentIdentifier {
     #[doc = " The text document's URI."]
     pub uri: DocumentUri,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct TextDocumentItem {
     #[doc = " The text document's language identifier."]
     #[serde(rename = "languageId")]
@@ -509,7 +509,24 @@ pub struct TextEdit {
     #[doc = " range where start === end."]
     pub range: Range,
 }
-pub type TokenFormat = String;
+
+/// The protocol defines an additional token format capability to allow
+/// future extensions of the format. The only format that is currently
+/// specified is relative expressing that the tokens are described
+/// using relative positions (see Integer Encoding for Tokens below).
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+pub struct TokenFormat(String);
+
+impl TokenFormat {
+    pub fn new(s: String) -> Self {
+        Self(s)
+    }
+
+    pub fn relative() -> Self {
+        Self("relative".to_string())
+    }
+}
+
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub enum TraceValue {
     #[serde(rename = "off")]
@@ -604,7 +621,7 @@ pub struct Unregistration {
 pub struct UnregistrationParams {
     pub unregisterations: Vec<Unregistration>,
 }
-#[derive(Clone, PartialEq, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
 pub struct VersionedTextDocumentIdentifier {
     #[doc = " The text document's URI."]
     pub uri: DocumentUri,
