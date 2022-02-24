@@ -1,6 +1,6 @@
 [package]
 name = "lsp-ty"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "type definitons for LSP"
 license-file = "../../LICENSE"

@@ -1,6 +1,6 @@
 [package]
 name = "lsp-io"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "simple wrapper for LSP message read/write"
 license-file = "../../LICENSE"
@@ -19,7 +19,7 @@ name = "yaya-async-lsp"
 required-features = ["async"]
 
 [dependencies]
-lsp-ty = { path = "../types", version = "0.2.1" }
+lsp-ty = { path = "../types", version = "0.2.2" }
 bytes = "1"
 serde_json = "1"
 serde = "1"
