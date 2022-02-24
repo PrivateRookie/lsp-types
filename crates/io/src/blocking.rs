@@ -27,6 +27,12 @@ impl<S: Read + Write> MessageCodec<S> {
     fn poll(&mut self) -> IOResult<usize> {
         let state = &mut self.state;
         let count = self.stream.read(&mut state.read_buf)?;
+        if count == 0 {
+            return Err(std::io::Error::new(
+                std::io::ErrorKind::ConnectionAborted,
+                "read eof",
+            ));
+        }
         state.read_data.extend_from_slice(&state.read_buf[..count]);
         Ok(count)
     }
