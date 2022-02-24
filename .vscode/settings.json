@@ -1,5 +1,8 @@
 {
     "rust-analyzer.cargo.features": [
-        "async"
+        "async",
+        "blocking",
+        "ws",
+        "async_ws"
     ]
 }

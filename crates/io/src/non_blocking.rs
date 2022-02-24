@@ -3,13 +3,15 @@ use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 
 use crate::utils::CodecState;
 
+type IOResult<T> = std::io::Result<T>;
+
 /// async protocol message reader/writer
-pub struct AMessageCodec<S: AsyncRead + AsyncWrite> {
+pub struct AsyncCodec<S: AsyncRead + AsyncWrite> {
     stream: S,
     state: CodecState,
 }
 
-impl<S: AsyncRead + AsyncWrite + Unpin> AMessageCodec<S> {
+impl<S: AsyncRead + AsyncWrite + Unpin> AsyncCodec<S> {
     pub fn new(stream: S) -> Self {
         Self {
             stream,
@@ -93,3 +95,79 @@ impl<S: AsyncRead + AsyncWrite + Unpin> AMessageCodec<S> {
         self.send(OneOf3::Other(message)).await
     }
 }
+
+#[cfg(feature = "async_ws")]
+mod ws_codec {
+
+    use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
+    use tokio::io::{AsyncRead, AsyncWrite};
+    use ws_tool::{codec::AsyncWsStringCodec, frame::OpCode};
+
+    use super::IOResult;
+
+    pub struct AsyncWsCodec<S: AsyncRead + AsyncWrite> {
+        ws: AsyncWsStringCodec<S>,
+    }
+
+    impl<S: AsyncRead + AsyncWrite + Unpin> AsyncWsCodec<S> {
+        pub fn new(stream: S) -> Self {
+            Self {
+                ws: AsyncWsStringCodec::new(stream),
+            }
+        }
+
+        pub fn stream_mut(&mut self) -> &mut S {
+            self.ws.stream_mut()
+        }
+
+        pub async fn receive(
+            &mut self,
+        ) -> IOResult<OneOf3<RequestMessage, ResponseMessage, NotificationMessage>> {
+            let (code, data) = self.ws.receive().await?;
+            if code == OpCode::Close {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::ConnectionAborted,
+                    "peer send close",
+                ));
+            } else if code == OpCode::Text {
+                let msg = serde_json::from_str(&data).map_err(|e| {
+                    std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string())
+                })?;
+                Ok(msg)
+            } else {
+                Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("unknown frame code {:?}", code),
+                ))
+            }
+        }
+
+        pub async fn send(
+            &mut self,
+            message: OneOf3<RequestMessage, ResponseMessage, NotificationMessage>,
+        ) -> IOResult<()> {
+            let json_str = serde_json::to_string(&message)
+                .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
+            self.ws.send((None, json_str)).await?;
+            Ok(())
+        }
+
+        /// helper function to send request only
+        pub async fn send_req(&mut self, message: RequestMessage) -> IOResult<()> {
+            self.send(OneOf3::This(message)).await
+        }
+
+        /// helper function to send response only
+        pub async fn send_resp(&mut self, message: ResponseMessage) -> IOResult<()> {
+            self.send(OneOf3::Among(message)).await
+        }
+
+        /// helper function to send notification only
+        pub async fn send_notice(&mut self, message: NotificationMessage) -> IOResult<()> {
+            self.send(OneOf3::Other(message)).await
+        }
+    }
+}
+
+#[cfg(feature="async_ws")]
+pub use ws_codec::AsyncWsCodec;

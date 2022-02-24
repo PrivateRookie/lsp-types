@@ -6,12 +6,12 @@ type IOResult<T> = std::io::Result<T>;
 use crate::utils::CodecState;
 
 /// protocol message reader/writer
-pub struct MessageCodec<S: Read + Write> {
+pub struct Codec<S: Read + Write> {
     stream: S,
     state: CodecState,
 }
 
-impl<S: Read + Write> MessageCodec<S> {
+impl<S: Read + Write> Codec<S> {
     pub fn new(stream: S) -> Self {
         Self {
             stream,
@@ -103,3 +103,79 @@ impl<S: Read + Write> MessageCodec<S> {
         self.send(OneOf3::Other(message))
     }
 }
+
+#[cfg(feature = "ws")]
+mod ws_codec {
+    use std::io::{Read, Write};
+
+    use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
+    use ws_tool::{codec::WsStringCodec, frame::OpCode};
+
+    use super::IOResult;
+
+    pub struct WsCodec<S: Read + Write> {
+        ws: WsStringCodec<S>,
+    }
+
+    impl<S: Read + Write> WsCodec<S> {
+        pub fn new(stream: S) -> Self {
+            Self {
+                ws: WsStringCodec::new(stream),
+            }
+        }
+
+        pub fn stream_mut(&mut self) -> &mut S {
+            self.ws.stream_mut()
+        }
+
+        pub fn receive(
+            &mut self,
+        ) -> IOResult<OneOf3<RequestMessage, ResponseMessage, NotificationMessage>> {
+            let (code, data) = self.ws.receive()?;
+            if code == OpCode::Close {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::ConnectionAborted,
+                    "peer send close",
+                ));
+            } else if code == OpCode::Text {
+                let msg = serde_json::from_str(&data).map_err(|e| {
+                    std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string())
+                })?;
+                Ok(msg)
+            } else {
+                Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidData,
+                    format!("unknown frame code {:?}", code),
+                ))
+            }
+        }
+
+        pub fn send(
+            &mut self,
+            message: OneOf3<RequestMessage, ResponseMessage, NotificationMessage>,
+        ) -> IOResult<()> {
+            let json_str = serde_json::to_string(&message)
+                .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
+            self.ws.send((None, json_str))?;
+            Ok(())
+        }
+
+        /// helper function to send request only
+        pub fn send_req(&mut self, message: RequestMessage) -> IOResult<()> {
+            self.send(OneOf3::This(message))
+        }
+
+        /// helper function to send response only
+        pub fn send_resp(&mut self, message: ResponseMessage) -> IOResult<()> {
+            self.send(OneOf3::Among(message))
+        }
+
+        /// helper function to send notification only
+        pub fn send_notice(&mut self, message: NotificationMessage) -> IOResult<()> {
+            self.send(OneOf3::Other(message))
+        }
+    }
+}
+
+#[cfg(feature="ws")]
+pub use ws_codec::WsCodec;

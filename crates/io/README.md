@@ -1,6 +1,6 @@
 # lsp-io
 
-simple wrapper for read/write LSP message.
+simple wrapper for read/write LSP message. support stdio/tcp/websocket transport.
 
 
 demo usage from example showing how to handle requests

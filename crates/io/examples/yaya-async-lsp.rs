@@ -1,7 +1,7 @@
 use std::{borrow::BorrowMut, sync::Arc};
 
 use clap::Parser;
-use lsp_io::AMessageCodec;
+use lsp_io::AsyncCodec;
 use lsp_ty::{
     CancelParams, CompletionItem, CompletionItemKind, CompletionOptions, CompletionParams, Empty,
     InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf3,
@@ -17,14 +17,14 @@ use tracing_subscriber::util::SubscriberInitExt;
 pub type IOResult<T> = std::io::Result<T>;
 
 pub struct Server {
-    codec: AMessageCodec<TcpStream>,
+    codec: AsyncCodec<TcpStream>,
     terminated: bool,
 }
 
 impl Server {
     fn new(stream: TcpStream) -> Self {
         Self {
-            codec: AMessageCodec::new(stream),
+            codec: AsyncCodec::new(stream),
             terminated: false,
         }
     }

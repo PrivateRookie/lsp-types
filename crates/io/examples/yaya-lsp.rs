@@ -1,5 +1,5 @@
 use clap::Parser;
-use lsp_io::MessageCodec;
+use lsp_io::Codec;
 use lsp_ty::{
     CancelParams, CompletionItem, CompletionItemKind, CompletionOptions, CompletionParams, Empty,
     InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf3,
@@ -17,14 +17,14 @@ use tracing_subscriber::util::SubscriberInitExt;
 pub type IOResult<T> = std::io::Result<T>;
 
 pub struct Server<S: Read + Write> {
-    codec: MessageCodec<S>,
+    codec: Codec<S>,
     terminated: bool,
 }
 
 impl<S: Read + Write> Server<S> {
     fn new(stream: S) -> Self {
         Self {
-            codec: MessageCodec::new(stream),
+            codec: Codec::new(stream),
             terminated: false,
         }
     }
