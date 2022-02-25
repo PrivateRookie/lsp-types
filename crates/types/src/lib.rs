@@ -42,13 +42,22 @@ serde_empty!(ShutdownParams);
 serde_empty!(WorkspaceFolderParams);
 serde_empty!(Empty);
 
-pub trait FromReq: Sized {
+pub trait FromReq: Sized + serde::Serialize {
     const METHOD: &'static str;
     type Ret;
 
     /// perform message cast from raw request message
     /// if method do not match, return `OneOf::Other(request)`
     fn from_req(req: RequestMessage) -> OneOf<(ReqId, Self), RequestMessage>;
+
+    fn into_req(self, id: ReqId) -> RequestMessage {
+        RequestMessage {
+            id,
+            method: Self::METHOD.to_string(),
+            jsonrpc: "2.0".to_string(),
+            params: Some(serde_json::to_value(self).unwrap()),
+        }
+    }
 
     /// helper function to test method match or not
     fn can_cast(req: &RequestMessage) -> bool {
