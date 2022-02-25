@@ -1,4 +1,4 @@
-use crate::{FromNotice, FromReq};
+use crate::{FromNotice, FromReq, ResponseError};
 
 use super::{Integer, NotificationMessage, RequestMessage, ResponseMessage};
 use serde::{Deserialize, Serialize};
@@ -312,6 +312,17 @@ mod async_impl {
                 }
             };
             ret.flat_o()
+        }
+    }
+}
+
+impl ResponseMessage {
+    pub fn err_resp<I: Into<Option<ReqId>>>(id: I, error: ResponseError) -> Self {
+        Self {
+            id: id.into(),
+            jsonrpc: "2.0".to_string(),
+            error: Some(error),
+            result: None,
         }
     }
 }

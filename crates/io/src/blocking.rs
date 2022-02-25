@@ -106,10 +106,18 @@ impl<S: Read + Write> Codec<S> {
 
 #[cfg(feature = "ws")]
 mod ws_codec {
-    use std::io::{Read, Write};
+    use std::{
+        io::{Read, Write},
+        net::TcpStream,
+    };
 
     use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
-    use ws_tool::{codec::WsStringCodec, frame::OpCode};
+    use ws_tool::{
+        codec::{default_handshake_handler, WsStringCodec},
+        frame::OpCode,
+        stream::WsStream,
+        ClientBuilder, ServerBuilder,
+    };
 
     use super::IOResult;
 
@@ -117,15 +125,20 @@ mod ws_codec {
         ws: WsStringCodec<S>,
     }
 
-    impl<S: Read + Write> WsCodec<S> {
-        pub fn new(stream: S) -> Self {
-            Self {
-                ws: WsStringCodec::new(stream),
-            }
+    impl WsCodec<WsStream> {
+        pub fn new_client<S: ToString>(addr: S) -> IOResult<Self> {
+            let ws = ClientBuilder::new(addr).connect(WsStringCodec::check_fn)?;
+            Ok(Self { ws })
         }
 
-        pub fn stream_mut(&mut self) -> &mut S {
-            self.ws.stream_mut()
+        pub fn new_server(stream: TcpStream) -> IOResult<Self> {
+            let ws =
+                ServerBuilder::accept(stream, default_handshake_handler, WsStringCodec::factory)?;
+            Ok(Self { ws })
+        }
+
+        pub fn stream_mut(&mut self) -> &mut TcpStream {
+            self.ws.stream_mut().stream_mut()
         }
 
         pub fn receive(
@@ -177,5 +190,5 @@ mod ws_codec {
     }
 }
 
-#[cfg(feature="ws")]
+#[cfg(feature = "ws")]
 pub use ws_codec::WsCodec;

@@ -100,8 +100,16 @@ impl<S: AsyncRead + AsyncWrite + Unpin> AsyncCodec<S> {
 mod ws_codec {
 
     use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
-    use tokio::io::{AsyncRead, AsyncWrite};
-    use ws_tool::{codec::AsyncWsStringCodec, frame::OpCode};
+    use tokio::{
+        io::{AsyncRead, AsyncWrite},
+        net::TcpStream,
+    };
+    use ws_tool::{
+        codec::{default_handshake_handler, AsyncWsStringCodec},
+        frame::OpCode,
+        stream::WsAsyncStream,
+        ClientBuilder, ServerBuilder,
+    };
 
     use super::IOResult;
 
@@ -109,15 +117,22 @@ mod ws_codec {
         ws: AsyncWsStringCodec<S>,
     }
 
-    impl<S: AsyncRead + AsyncWrite + Unpin> AsyncWsCodec<S> {
-        pub fn new(stream: S) -> Self {
-            Self {
-                ws: AsyncWsStringCodec::new(stream),
-            }
+    impl AsyncWsCodec<WsAsyncStream> {
+        pub async fn new_client<S: ToString>(addr: S) -> IOResult<Self> {
+            let ws = ClientBuilder::new(addr)
+                .async_connect(AsyncWsStringCodec::check_fn)
+                .await?;
+            Ok(Self { ws })
         }
 
-        pub fn stream_mut(&mut self) -> &mut S {
-            self.ws.stream_mut()
+        pub async fn new_server(stream: TcpStream) -> IOResult<Self> {
+            let ws = ServerBuilder::async_accept(
+                stream,
+                default_handshake_handler,
+                AsyncWsStringCodec::factory,
+            )
+            .await?;
+            Ok(Self { ws })
         }
 
         pub async fn receive(
@@ -169,5 +184,5 @@ mod ws_codec {
     }
 }
 
-#[cfg(feature="async_ws")]
+#[cfg(feature = "async_ws")]
 pub use ws_codec::AsyncWsCodec;
