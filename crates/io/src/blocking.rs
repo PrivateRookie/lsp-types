@@ -106,10 +106,7 @@ impl<S: Read + Write> Codec<S> {
 
 #[cfg(feature = "ws")]
 mod ws_codec {
-    use std::{
-        io::{Read, Write},
-        net::TcpStream,
-    };
+    use std::net::TcpStream;
 
     use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
     use ws_tool::{
@@ -121,11 +118,11 @@ mod ws_codec {
 
     use super::IOResult;
 
-    pub struct WsCodec<S: Read + Write> {
-        ws: WsStringCodec<S>,
+    pub struct WsCodec {
+        ws: WsStringCodec<WsStream>,
     }
 
-    impl WsCodec<WsStream> {
+    impl WsCodec {
         pub fn new_client<S: ToString>(addr: S) -> IOResult<Self> {
             let ws = ClientBuilder::new(addr).connect(WsStringCodec::check_fn)?;
             Ok(Self { ws })

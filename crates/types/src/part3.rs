@@ -358,6 +358,7 @@ pub struct TextDocumentClientCapabilities {
     pub type_definition: Option<TypeDefinitionClientCapabilities>,
 }
 #[derive(Clone, PartialEq, Debug, Deserialize, Serialize)]
+#[serde(untagged)]
 #[doc = " An event describing a change to a text document. If range and rangeLength are omitted the new "]
 #[doc = " text is considered to be the full content of the document."]
 pub enum TextDocumentContentChangeEvent {

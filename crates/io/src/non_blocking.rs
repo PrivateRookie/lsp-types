@@ -100,10 +100,7 @@ impl<S: AsyncRead + AsyncWrite + Unpin> AsyncCodec<S> {
 mod ws_codec {
 
     use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
-    use tokio::{
-        io::{AsyncRead, AsyncWrite},
-        net::TcpStream,
-    };
+    use tokio::net::TcpStream;
     use ws_tool::{
         codec::{default_handshake_handler, AsyncWsStringCodec},
         frame::OpCode,
@@ -113,11 +110,11 @@ mod ws_codec {
 
     use super::IOResult;
 
-    pub struct AsyncWsCodec<S: AsyncRead + AsyncWrite> {
-        ws: AsyncWsStringCodec<S>,
+    pub struct AsyncWsCodec {
+        ws: AsyncWsStringCodec<WsAsyncStream<TcpStream>>,
     }
 
-    impl AsyncWsCodec<WsAsyncStream> {
+    impl AsyncWsCodec {
         pub async fn new_client<S: ToString>(addr: S) -> IOResult<Self> {
             let ws = ClientBuilder::new(addr)
                 .async_connect(AsyncWsStringCodec::check_fn)

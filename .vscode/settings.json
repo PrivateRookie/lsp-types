@@ -4,5 +4,6 @@
         "blocking",
         "ws",
         "async_ws"
-    ]
+    ],
+    "rust-analyzer.cargo.allFeatures": true
 }
