@@ -68,12 +68,15 @@ pub trait FromReq: Sized + serde::Serialize {
 #[macro_export]
 macro_rules! impl_req {
     ($type:ty, $method:literal, $ret:path) => {
-        impl FromReq for $type {
+        impl $crate::FromReq for $type {
             const METHOD: &'static str = $method;
             type Ret = $ret;
 
-            fn from_req(req: RequestMessage) -> OneOf<(ReqId, Self), RequestMessage> {
-                if <Self as FromReq>::can_cast(&req) {
+            fn from_req(
+                req: $crate::RequestMessage,
+            ) -> $crate::OneOf<($crate::ReqId, Self), $crate::RequestMessage> {
+                use $crate::{OneOf, RequestMessage};
+                if <Self as $crate::FromReq>::can_cast(&req) {
                     let RequestMessage { id, params, .. } = req;
                     let params: Self =
                         serde_json::from_value(params.unwrap_or_else(|| serde_json::Value::Null))
@@ -324,11 +327,14 @@ pub trait FromNotice: Sized + serde::Serialize {
 #[macro_export]
 macro_rules! impl_notice {
     ($type:ty, $method:literal) => {
-        impl FromNotice for $type {
+        impl $crate::FromNotice for $type {
             const METHOD: &'static str = $method;
 
-            fn from_notice(notice: NotificationMessage) -> OneOf<Self, NotificationMessage> {
-                if <Self as FromNotice>::can_cast(&notice) {
+            fn from_notice(
+                notice: $crate::NotificationMessage,
+            ) -> $crate::OneOf<Self, $crate::NotificationMessage> {
+                use $crate::{NotificationMessage, OneOf};
+                if <Self as $crate::FromNotice>::can_cast(&notice) {
                     let NotificationMessage { params, .. } = notice;
                     let params =
                         serde_json::from_value(params.unwrap_or_else(|| serde_json::Value::Null))
