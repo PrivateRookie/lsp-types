@@ -135,23 +135,28 @@ mod ws_codec {
         pub async fn receive(
             &mut self,
         ) -> IOResult<OneOf3<RequestMessage, ResponseMessage, NotificationMessage>> {
-            let (code, data) = self.ws.receive().await?;
-            if code == OpCode::Close {
+            let msg = self.ws.receive().await?;
+            if msg.code == OpCode::Close {
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::ConnectionAborted,
                     "peer send close",
                 ));
-            } else if code == OpCode::Text {
-                let msg = serde_json::from_str(&data).map_err(|e| {
+            } else if msg.code == OpCode::Text {
+                let msg = serde_json::from_str(&msg.data).map_err(|e| {
                     std::io::Error::new(std::io::ErrorKind::InvalidData, e.to_string())
                 })?;
                 Ok(msg)
             } else {
                 Err(std::io::Error::new(
                     std::io::ErrorKind::InvalidData,
-                    format!("unknown frame code {:?}", code),
+                    format!("unknown frame code {:?}", msg.code),
                 ))
             }
+        }
+
+        pub async fn close(&mut self, status: u16, msg: String) -> IOResult<()> {
+            self.ws.send((status, msg)).await?;
+            Ok(())
         }
 
         pub async fn send(
@@ -160,7 +165,7 @@ mod ws_codec {
         ) -> IOResult<()> {
             let json_str = serde_json::to_string(&message)
                 .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
-            self.ws.send((None, json_str)).await?;
+            self.ws.send(json_str).await?;
             Ok(())
         }
 
