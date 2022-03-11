@@ -155,6 +155,13 @@ impl<C> ReqWithContext<C> {
             .map_o(|req| Self((req, ctx)))
     }
 
+    pub fn group<F, I>(self, f: F) -> OneOf<I, Self>
+    where
+        F: FnOnce(OneOf<I, Self>) -> OneOf<I, Self>,
+    {
+        f(OneOf::Other(self))
+    }
+
     pub fn split(self) -> (RequestMessage, C) {
         self.0
     }
@@ -169,6 +176,13 @@ impl<I, C> OneOf<I, ReqWithContext<C>> {
         F: FnOnce(C, ReqId, R) -> I,
     {
         self.map_o(|req| req.then(f)).flat_o()
+    }
+
+    pub fn group<F>(self, f: F) -> Self
+    where
+        F: FnOnce(Self) -> Self,
+    {
+        f(self)
     }
 }
 
@@ -253,6 +267,14 @@ mod async_impl {
                 OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
             }
         }
+
+        pub async fn async_group<F, I, IFut>(self, f: F) -> OneOf<I, Self>
+        where
+            IFut: Future<Output = OneOf<I, Self>>,
+            F: FnOnce(OneOf<I, Self>) -> IFut,
+        {
+            f(OneOf::Other(self)).await
+        }
     }
 
     impl<I, C> OneOf<I, ReqWithContext<C>> {
@@ -272,6 +294,14 @@ mod async_impl {
                 }
             };
             ret.flat_o()
+        }
+
+        pub async fn async_group<F, Fut>(self, f: F) -> Self
+        where
+            Fut: Future<Output = Self>,
+            F: FnOnce(Self) -> Fut,
+        {
+            f(self).await
         }
     }
 
