@@ -134,25 +134,42 @@ impl ReqId {
 }
 
 impl RequestMessage {
-    pub fn with<C>(self, ctx: C) -> ReqWithContext<C> {
-        ReqWithContext((self, ctx))
+    pub fn with<C, T, H: FnOnce(C, ReqId, serde_json::Error) -> T>(
+        self,
+        ctx: C,
+        err_handler: H,
+    ) -> ReqWithContext<C, T, H> {
+        ReqWithContext((self, ctx, err_handler))
     }
 }
 
-pub struct ReqWithContext<C>((RequestMessage, C));
+pub struct ReqWithContext<C, T, H: FnOnce(C, ReqId, serde_json::Error) -> T>(
+    (RequestMessage, C, H),
+);
 
-impl<C> ReqWithContext<C> {
+impl<C, T, H> ReqWithContext<C, T, H>
+where
+    H: FnOnce(C, ReqId, serde_json::Error) -> T,
+{
     /// passing handler for current request
-    pub fn then<R, F, I>(self, f: F) -> OneOf<I, Self>
+    pub fn then<R, F, I>(self, f: F) -> OneOf<OneOf<I, T>, Self>
     where
         C: Clone,
         R: FromReq,
         F: FnOnce(C, ReqId, R) -> I,
     {
-        let (req, ctx) = self.0;
-        R::from_req(req)
-            .map_t(|(req_id, req)| f(ctx.clone(), req_id, req))
-            .map_o(|req| Self((req, ctx)))
+        let (req, ctx, handler) = self.0;
+        let req_id = req.id.clone();
+        match R::from_req(req) {
+            OneOf::This(res) => {
+                let ret = match res {
+                    Ok((req_id, req)) => OneOf::This(f(ctx.clone(), req_id, req)),
+                    Err(e) => OneOf::Other(handler(ctx.clone(), req_id, e)),
+                };
+                OneOf::This(ret)
+            }
+            OneOf::Other(req) => OneOf::Other(Self((req, ctx, handler))),
+        }
     }
 
     pub fn group<F, I>(self, f: F) -> OneOf<I, Self>
@@ -162,14 +179,17 @@ impl<C> ReqWithContext<C> {
         f(OneOf::Other(self))
     }
 
-    pub fn split(self) -> (RequestMessage, C) {
+    pub fn split(self) -> (RequestMessage, C, H) {
         self.0
     }
 }
 
-impl<I, C> OneOf<I, ReqWithContext<C>> {
+impl<I, C, T, H> OneOf<OneOf<I, T>, ReqWithContext<C, T, H>>
+where
+    H: FnOnce(C, ReqId, serde_json::Error) -> T,
+{
     /// if previous handler does not match method field, pass alternative handler
-    pub fn or_else<F, R>(self, f: F) -> OneOf<I, ReqWithContext<C>>
+    pub fn or_else<F, R>(self, f: F) -> OneOf<OneOf<I, T>, ReqWithContext<C, T, H>>
     where
         C: Clone,
         R: FromReq,
@@ -249,22 +269,29 @@ mod async_impl {
         }
     }
 
-    impl<C> ReqWithContext<C> {
+    impl<C, T, H, FT> ReqWithContext<C, T, H>
+    where
+        H: FnOnce(C, ReqId, serde_json::Error) -> T,
+        T: Future<Output = FT>,
+    {
         /// async version of `then`, passing async handler
-        pub async fn async_then<R, F, I, IF>(self, f: F) -> OneOf<I, Self>
+        pub async fn async_then<R, F, I, IF>(self, f: F) -> OneOf<OneOf<I, FT>, Self>
         where
             C: Clone,
             R: FromReq,
             IF: Future<Output = I>,
             F: FnOnce(C, ReqId, R) -> IF,
         {
-            let (req, ctx) = self.0;
+            let (req, ctx, handler) = self.0;
+            let req_id = req.id.clone();
             match R::from_req(req) {
-                OneOf::This((req_id, req)) => {
-                    let t = f(ctx.clone(), req_id, req).await;
-                    OneOf::This(t)
-                }
-                OneOf::Other(req) => OneOf::Other(Self((req, ctx))),
+                OneOf::This(res) => match res {
+                    Ok((req_id, req)) => {
+                        OneOf::This(OneOf::This(f(ctx.clone(), req_id, req).await))
+                    }
+                    Err(e) => OneOf::This(OneOf::Other(handler(ctx, req_id, e).await)),
+                },
+                OneOf::Other(req) => OneOf::Other(Self((req, ctx, handler))),
             }
         }
 
@@ -277,9 +304,16 @@ mod async_impl {
         }
     }
 
-    impl<I, C> OneOf<I, ReqWithContext<C>> {
+    impl<I, C, T, H, FT> OneOf<OneOf<I, FT>, ReqWithContext<C, T, H>>
+    where
+        H: FnOnce(C, ReqId, serde_json::Error) -> T,
+        T: Future<Output = FT>,
+    {
         /// async version of `or_else`, passing async handler
-        pub async fn async_or_else<F, R, IF>(self, f: F) -> OneOf<I, ReqWithContext<C>>
+        pub async fn async_or_else<F, R, IF>(
+            self,
+            f: F,
+        ) -> OneOf<OneOf<I, FT>, ReqWithContext<C, T, H>>
         where
             C: Clone,
             R: FromReq,

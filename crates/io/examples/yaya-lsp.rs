@@ -2,8 +2,9 @@ use clap::Parser;
 use lsp_io::Codec;
 use lsp_ty::{
     CancelParams, CompletionItem, CompletionItemKind, CompletionOptions, CompletionParams, Empty,
-    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf3,
-    RequestMessage, ResponseMessage, ServerCapabilities, ShutdownParams,
+    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf,
+    OneOf3, ReqId, RequestMessage, ResponseError, ResponseMessage, ServerCapabilities,
+    ShutdownParams,
 };
 use std::{
     cell::RefCell,
@@ -19,6 +20,24 @@ pub type IOResult<T> = std::io::Result<T>;
 pub struct Server<S: Read + Write> {
     codec: Codec<S>,
     terminated: bool,
+}
+
+fn params_error<S: Read + Write>(
+    server: Rc<RefCell<&mut Server<S>>>,
+    id: ReqId,
+    e: serde_json::Error,
+) -> IOResult<()> {
+    server
+        .borrow_mut()
+        .codec
+        .send_resp(ResponseMessage::err_resp(
+            id,
+            ResponseError {
+                code: -32602,
+                data: None,
+                message: e.to_string(),
+            },
+        ))
 }
 
 impl<S: Read + Write> Server<S> {
@@ -42,7 +61,7 @@ impl<S: Read + Write> Server<S> {
 
     pub fn on_req(&mut self, req: RequestMessage) -> IOResult<()> {
         // pass context when handle request need;
-        req.with(Rc::new(RefCell::new(self)))
+        req.with(Rc::new(RefCell::new(self)), params_error)
             // pass handler function, you must specify param type
             // in anonymous handler function argument, other wise
             // you have to use turbo fish symbol
@@ -83,11 +102,12 @@ impl<S: Read + Write> Server<S> {
             })
             // finally handle default req
             .unify(|req| {
-                let (req, ctx) = req.split();
+                let (req, ctx, _) = req.split();
                 tracing::warn!("unhandled {:#?}", req);
                 let mut ctx = ctx.borrow_mut();
-                ctx.resp(req.id.ok_resp(serde_json::Value::Null))
+                OneOf::This(ctx.resp(req.id.ok_resp(serde_json::Value::Null)))
             })
+            .unify(|x| x)
     }
 
     pub fn on_notify(&mut self, notice: NotificationMessage) -> IOResult<()> {

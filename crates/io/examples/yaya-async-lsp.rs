@@ -4,8 +4,9 @@ use clap::Parser;
 use lsp_io::AsyncCodec;
 use lsp_ty::{
     CancelParams, CompletionItem, CompletionItemKind, CompletionOptions, CompletionParams, Empty,
-    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf3,
-    RequestMessage, ResponseMessage, ServerCapabilities, ShutdownParams,
+    InitializeParams, InitializeResult, InitializeResultServerInfo, NotificationMessage, OneOf,
+    OneOf3, ReqId, RequestMessage, ResponseError, ResponseMessage, ServerCapabilities,
+    ShutdownParams,
 };
 use tokio::{
     net::{TcpListener, TcpStream},
@@ -19,6 +20,26 @@ pub type IOResult<T> = std::io::Result<T>;
 pub struct Server {
     codec: AsyncCodec<TcpStream>,
     terminated: bool,
+}
+
+async fn params_error(
+    server: Arc<Mutex<&mut Server>>,
+    id: ReqId,
+    e: serde_json::Error,
+) -> IOResult<()> {
+    server
+        .lock()
+        .await
+        .codec
+        .send_resp(ResponseMessage::err_resp(
+            id,
+            ResponseError {
+                code: -32602,
+                data: None,
+                message: e.to_string(),
+            },
+        ))
+        .await
 }
 
 impl Server {
@@ -43,7 +64,7 @@ impl Server {
     pub async fn on_req(&mut self, req: RequestMessage) -> IOResult<()> {
         // pass context when handle request need;
 
-        req.with(Arc::new(Mutex::new(self)))
+        req.with(Arc::new(Mutex::new(self)), params_error)
             // pass handler function, you must specify param type
             // in anonymous handler function argument, other wise
             // you have to use turbo fish symbol
@@ -92,11 +113,13 @@ impl Server {
             // finally handle default req
             .await
             .async_unify(|req| async move {
-                let (req, ctx) = req.split();
+                let (req, ctx, _) = req.split();
                 tracing::warn!("unhandled {:#?}", req);
                 let mut ctx = ctx.lock().await;
-                ctx.resp(req.id.ok_resp(serde_json::Value::Null)).await
+                OneOf::This(ctx.resp(req.id.ok_resp(serde_json::Value::Null)).await)
             })
+            .await
+            .async_unify(|x| async move { x })
             .await
     }
 

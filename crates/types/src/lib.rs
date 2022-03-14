@@ -48,7 +48,9 @@ pub trait FromReq: Sized + serde::Serialize {
 
     /// perform message cast from raw request message
     /// if method do not match, return `OneOf::Other(request)`
-    fn from_req(req: RequestMessage) -> OneOf<(ReqId, Self), RequestMessage>;
+    fn from_req(
+        req: RequestMessage,
+    ) -> OneOf<Result<(ReqId, Self), serde_json::Error>, RequestMessage>;
 
     fn into_req(self, id: ReqId) -> RequestMessage {
         RequestMessage {
@@ -74,14 +76,17 @@ macro_rules! impl_req {
 
             fn from_req(
                 req: $crate::RequestMessage,
-            ) -> $crate::OneOf<($crate::ReqId, Self), $crate::RequestMessage> {
+            ) -> $crate::OneOf<
+                Result<($crate::ReqId, Self), serde_json::Error>,
+                $crate::RequestMessage,
+            > {
                 use $crate::{OneOf, RequestMessage};
                 if <Self as $crate::FromReq>::can_cast(&req) {
                     let RequestMessage { id, params, .. } = req;
-                    let params: Self =
+                    OneOf::This(
                         serde_json::from_value(params.unwrap_or_else(|| serde_json::Value::Null))
-                            .unwrap();
-                    OneOf::This((id, params))
+                            .map(|params| (id, params)),
+                    )
                 } else {
                     OneOf::Other(req)
                 }
