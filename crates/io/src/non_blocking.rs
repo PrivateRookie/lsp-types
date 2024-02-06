@@ -98,35 +98,42 @@ impl<S: AsyncRead + AsyncWrite + Unpin> AsyncCodec<S> {
 
 #[cfg(feature = "async_ws")]
 mod ws_codec {
+    use std::io;
 
     use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
-    use tokio::net::TcpStream;
+    use tokio::{io::BufStream, net::TcpStream};
     use ws_tool::{
-        codec::{default_handshake_handler, AsyncWsStringCodec},
+        codec::{default_handshake_handler, AsyncStringCodec},
         frame::OpCode,
-        stream::WsAsyncStream,
         ClientBuilder, ServerBuilder,
     };
 
     use super::IOResult;
 
     pub struct AsyncWsCodec {
-        ws: AsyncWsStringCodec<WsAsyncStream<TcpStream>>,
+        ws: AsyncStringCodec<tokio::io::BufStream<TcpStream>>,
     }
 
     impl AsyncWsCodec {
-        pub async fn new_client<S: ToString>(addr: S) -> IOResult<Self> {
-            let ws = ClientBuilder::new(addr)
-                .async_connect(AsyncWsStringCodec::check_fn)
+        pub async fn new_client(uri: &str) -> IOResult<Self> {
+            let uri = uri
+                .parse()
+                .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid addr"))?;
+            let ws = ClientBuilder::new()
+                .async_connect(uri, |key, resp, stream| {
+                    let stream = BufStream::new(stream);
+                    AsyncStringCodec::check_fn(key, resp, stream)
+                })
                 .await?;
             Ok(Self { ws })
         }
 
         pub async fn new_server(stream: TcpStream) -> IOResult<Self> {
+            let stream = BufStream::new(stream);
             let ws = ServerBuilder::async_accept(
                 stream,
                 default_handshake_handler,
-                AsyncWsStringCodec::factory,
+                AsyncStringCodec::factory,
             )
             .await?;
             Ok(Self { ws })
@@ -165,7 +172,8 @@ mod ws_codec {
         ) -> IOResult<()> {
             let json_str = serde_json::to_string(&message)
                 .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
-            self.ws.send(json_str).await?;
+            self.ws.send(&json_str).await?;
+            self.ws.flush().await?;
             Ok(())
         }
 

@@ -106,36 +106,43 @@ impl<S: Read + Write> Codec<S> {
 
 #[cfg(feature = "ws")]
 mod ws_codec {
-    use std::net::TcpStream;
+    use std::{io, net::TcpStream};
 
     use lsp_ty::{NotificationMessage, OneOf3, RequestMessage, ResponseMessage};
     use ws_tool::{
-        codec::{default_handshake_handler, WsStringCodec},
+        codec::{default_handshake_handler, StringCodec},
         frame::OpCode,
-        stream::WsStream,
+        stream::BufStream,
         ClientBuilder, ServerBuilder,
     };
 
     use super::IOResult;
 
     pub struct WsCodec {
-        ws: WsStringCodec<WsStream<TcpStream>>,
+        ws: StringCodec<BufStream<TcpStream>>,
     }
 
     impl WsCodec {
-        pub fn new_client<S: ToString>(addr: S) -> IOResult<Self> {
-            let ws = ClientBuilder::new(addr).connect(WsStringCodec::check_fn)?;
+        pub fn new_client(uri: &str) -> IOResult<Self> {
+            let uri = uri
+                .parse()
+                .map_err(|_| io::Error::new(io::ErrorKind::InvalidInput, "invalid addr"))?;
+            let ws = ClientBuilder::new().connect(uri, |key, resp, stream| {
+                let stream = BufStream::new(stream);
+                StringCodec::check_fn(key, resp, stream)
+            })?;
             Ok(Self { ws })
         }
 
         pub fn new_server(stream: TcpStream) -> IOResult<Self> {
+            let stream = BufStream::new(stream);
             let ws =
-                ServerBuilder::accept(stream, default_handshake_handler, WsStringCodec::factory)?;
+                ServerBuilder::accept(stream, default_handshake_handler, StringCodec::factory)?;
             Ok(Self { ws })
         }
 
-        pub fn stream_mut(&mut self) -> &mut TcpStream {
-            self.ws.stream_mut().stream_mut()
+        pub fn stream_mut(&mut self) -> &mut BufStream<TcpStream> {
+            self.ws.stream_mut()
         }
 
         pub fn receive(
@@ -162,6 +169,7 @@ mod ws_codec {
 
         pub fn close(&mut self, status: u16, msg: String) -> IOResult<()> {
             self.ws.send((status, msg))?;
+            self.ws.flush()?;
             Ok(())
         }
 
@@ -171,7 +179,8 @@ mod ws_codec {
         ) -> IOResult<()> {
             let json_str = serde_json::to_string(&message)
                 .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
-            self.ws.send(json_str)?;
+            self.ws.send(&json_str)?;
+            self.ws.flush()?;
             Ok(())
         }
 
